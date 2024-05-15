@@ -2,6 +2,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <shaders/shaders.h>
+
+
 using namespace std; 
 
 float WINDOW_WIDTH = 800;
@@ -45,6 +48,10 @@ int main() {
         cout << "ERROR LOADING/INITIALIZING GLAD" << endl;
         return -1;
     }
+
+    // Create the shader program
+    Shader shader("res/shaders/basic.vert", "res/shaders/basic.frag");
+
 
     // Render loop
     while (!glfwWindowShouldClose(window)){
