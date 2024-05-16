@@ -12,6 +12,7 @@
                 "-L${workspaceFolder}/lib",
                 "${workspaceFolder}/src/main.cpp",
                 "${workspaceFolder}/src/shaders.cpp",
+                "${workspaceFolder}/src/camera.cpp",
                 "${workspaceFolder}/src/glad.c",
                 "-lglfw3dll",
                 "-o",
