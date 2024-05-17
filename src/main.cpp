@@ -8,6 +8,7 @@
 
 #include "shaders/shaders.h"
 #include "camera/camera.h"
+#include "physicsObjects/physicsObjects.h"
 
 
 using namespace std; 
@@ -107,6 +108,15 @@ int main() {
 
     shader.Use();
 
+    //-------------------------------------------------------------------------------------
+
+    glm::vec3 gravity = glm::vec3(0.0f, -9.8f, 0.0f);
+
+    PhysicsObject box(make_unique<Box>(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f)), glm::vec3(0.0f, 10.0f, 0.0f), 1.0f, 0.9f);
+
+
+    //-------------------------------------------------------------------------------------
+
 
     // Render loop
     while (!glfwWindowShouldClose(window)){
@@ -121,6 +131,14 @@ int main() {
         // Rendering commands here
         glClearColor(0.1f, 0.3f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        //-----------------------
+        box.rigidBody.AddForce(gravity * box.rigidBody.GetMass());
+        box.Update(deltaTime);
+
+        glm::vec3 boxPos = box.rigidBody.GetPosition();
+        cout << "Box Position: " << boxPos.x << " " << boxPos.y << " " << boxPos.z << endl;
+        //-----------------------
 
             // View Uniforms
         glm::mat4 model = glm::mat4(1.0f);
