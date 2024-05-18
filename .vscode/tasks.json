@@ -11,6 +11,7 @@
                 "-I${workspaceFolder}/include",
                 "-L${workspaceFolder}/lib",
                 "${workspaceFolder}/src/main.cpp",
+                "${workspaceFolder}/src/setup.cpp",
                 "${workspaceFolder}/src/shaders.cpp",
                 "${workspaceFolder}/src/camera.cpp",
                 "${workspaceFolder}/src/rigidbody.cpp",

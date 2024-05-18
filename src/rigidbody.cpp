@@ -2,7 +2,8 @@
 
 Rigidbody::Rigidbody(glm::vec3 pos, float m, float damp)
     : position(pos), mass(m), damping(damp){
-    inverseMass = 1.0f / mass;
+if (mass == 0.0f) inverseMass = 0.0f;
+    else inverseMass = 1.0f / mass;
     velocity = glm::vec3(0.0f, 0.0f, 0.0f);
     acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
     forceAccum = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -35,7 +36,8 @@ glm::vec3 Rigidbody::GetAcceleration() {
 
 void Rigidbody::SetMass(float m) {
     mass = m;
-    inverseMass = 1.0f / mass;
+    if (mass == 0.0f) inverseMass = 0.0f;
+    else inverseMass = 1.0f / mass;
 }
 
 float Rigidbody::GetMass() {

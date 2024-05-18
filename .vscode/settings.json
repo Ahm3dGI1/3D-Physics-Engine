@@ -57,7 +57,9 @@
         "xmemory": "cpp",
         "xstring": "cpp",
         "xtr1common": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "fstream": "cpp",
+        "sstream": "cpp"
     },
     "cmake.sourceDirectory": "D:/Projects/3D-Physics-Engine/include/glm"
 }

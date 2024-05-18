@@ -1,11 +1,7 @@
-#include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <vector>
+#include <map>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
+#include "setup/setup.h"
 #include "shaders/shaders.h"
 #include "camera/camera.h"
 #include "physicsObjects/physicsObjects.h"
@@ -18,7 +14,6 @@ float WINDOW_HEIGHT = 600;
 
 
 // Functions prototypes
-void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
 void ProcessUserInput(GLFWwindow* window);
 void MouseCallback(GLFWwindow * window, double xPosIn, double yPosIn);
 
@@ -34,22 +29,9 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 int main() {
-    glfwInit();
-
-    // Set OpenGL version to 3.3
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-    // Set OpenGL profile to core
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Set OpenGL forward compatibility to true if he user has a MacOS
-    #ifdef __APPLE__
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    #endif
 
     // Create a window
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "utable", NULL, NULL);
+    GLFWwindow* window = GLFWSetup(3, 3, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Check if the window was created successfully
     if(window == NULL) {
@@ -58,18 +40,15 @@ int main() {
         return -1;
     }
 
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, FrameBufferSizeCallback); // Update the frame buffer whenever the window is resized
-
-    // Enable taking mouse inputs
-    glfwSetCursorPosCallback(window, MouseCallback);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
     // Load OpenGL function pointers through GLAD
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         cout << "ERROR LOADING/INITIALIZING GLAD" << endl;
         return -1;
     }
+
+    // Enable taking mouse inputs
+    glfwSetCursorPosCallback(window, MouseCallback);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // Enable Depth Buffer
     glEnable(GL_DEPTH_TEST);
@@ -77,17 +56,16 @@ int main() {
     // Create the shader program
     Shader shader("res/shaders/basic.vert", "res/shaders/basic.frag");
 
+    //-------------------------------------------------------------------------------------
+    vector<PhysicsObject> objects;
 
-    // 6 plane vertices
-    float planeVerts[] = {
-        // Positions              // Colors
-         1.5f,  1.5f, 0.0f,    1.0f, 0.0f, 0.0f,
-         1.5f, -1.5f, 0.0f,    0.0f, 1.0f, 0.0f,
-        -1.5f, -1.5f, 0.0f,    0.0f, 0.0f, 1.0f,
-        -1.5f,  1.5f, 0.0f,    0.0f, 0.0f, 1.0f,
-         1.5f,  1.5f, 0.0f,    1.0f, 0.0f, 0.0f,
-        -1.5f, -1.5f, 0.0f,    0.0f, 1.0f, 0.0f
-    };
+    objects.push_back(PhysicsObject(make_unique<Box>(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f)), glm::vec3(0.0f, 10.0f, 0.0f), 1.0f, 0.9f));
+
+    objects.push_back(PhysicsObject(make_unique<Plane>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.0f), glm::vec3(0.0f), 0.0f, 0.0f));
+
+    glm::vec3 gravity = glm::vec3(0.0f, -9.8f, 0.0f);
+    //-------------------------------------------------------------------------------------
+
 
     // Vertex Array Object, Vertex Buffer Object
     unsigned int VAO, VBO;
@@ -97,7 +75,6 @@ int main() {
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(planeVerts), planeVerts, GL_STATIC_DRAW);
 
     // Vertex attributes
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
@@ -108,14 +85,6 @@ int main() {
 
     shader.Use();
 
-    //-------------------------------------------------------------------------------------
-
-    glm::vec3 gravity = glm::vec3(0.0f, -9.8f, 0.0f);
-
-    PhysicsObject box(make_unique<Box>(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f)), glm::vec3(0.0f, 10.0f, 0.0f), 1.0f, 0.9f);
-
-
-    //-------------------------------------------------------------------------------------
 
 
     // Render loop
@@ -133,17 +102,30 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //-----------------------
-        box.rigidBody.AddForce(gravity * box.rigidBody.GetMass());
-        box.Update(deltaTime);
 
-        glm::vec3 boxPos = box.rigidBody.GetPosition();
-        cout << "Box Position: " << boxPos.x << " " << boxPos.y << " " << boxPos.z << endl;
+
+            glBindVertexArray(VAO);
+
+        for (int i = 0; i < objects.size(); i++){
+            glm::vec3 objPos = objects[i].rigidBody.GetPosition();
+
+            objects[i].rigidBody.AddForce(gravity * objects[i].rigidBody.GetMass());
+            objects[i].Update(deltaTime);
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, objPos);
+            model = glm::rotate(model, glm::radians(20.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+            shader.SetMat4("model", model);
+
+            glBufferData(GL_ARRAY_BUFFER, objects[i].shape->vertices.size() * sizeof(float), objects[i].shape->vertices.data(), GL_STATIC_DRAW);
+                // Draw the plane
+            glDrawArrays(GL_TRIANGLES, 0, objects[i].shape->vertices.size()/6);
+        }
         //-----------------------
+        
+
 
             // View Uniforms
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-89.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        shader.SetMat4("model", model);
         
         glm::mat4 view = camera.GetViewMat();
         shader.SetMat4("view", view);
@@ -154,9 +136,6 @@ int main() {
 
 
 
-            // Draw the plane
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // Swap the front and back buffers and poll for IO events
         glfwSwapBuffers(window);
@@ -168,11 +147,6 @@ int main() {
     return 0;
 }
 
-// Whenever the user or the OS changes the window size this function is called to update the viewport size
-void FrameBufferSizeCallback(GLFWwindow* window, int width, int height) {
-    // Set the viewport size to the new window size
-    glViewport(0, 0, width, height);
-}
 
 void ProcessUserInput(GLFWwindow* window){
     // Close the window when the user presses the ESC key
