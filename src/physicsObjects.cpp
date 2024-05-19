@@ -12,5 +12,7 @@ void PhysicsObject::Update(float deltaTime){
     }
     else if (auto box = dynamic_cast<Box*>(shape.get())){
         box->center = rigidBody.GetPosition();
+        box->minCorner = box->center - glm::vec3(0.5f);
+        box->maxCorner = box->center + glm::vec3(0.5f);
     }
 }

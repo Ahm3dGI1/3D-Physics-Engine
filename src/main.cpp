@@ -28,6 +28,9 @@ float fov = 45.0f;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+// Physics Objects
+vector<PhysicsObject> objects;
+
 int main() {
 
     // Create a window
@@ -57,11 +60,12 @@ int main() {
     Shader shader("res/shaders/basic.vert", "res/shaders/basic.frag");
 
     //-------------------------------------------------------------------------------------
-    vector<PhysicsObject> objects;
 
     objects.push_back(PhysicsObject(make_unique<Box>(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f)), glm::vec3(0.0f, 10.0f, 0.0f), 1.0f, 0.9f));
 
     objects.push_back(PhysicsObject(make_unique<Plane>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.0f), glm::vec3(0.0f), 0.0f, 0.0f));
+
+    objects.push_back(PhysicsObject(make_unique<Sphere>(0.5f, glm::vec3(0.0f, 0.0f, 0.0f)), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 0.9f));
 
     glm::vec3 gravity = glm::vec3(0.0f, -9.8f, 0.0f);
     //-------------------------------------------------------------------------------------
@@ -102,27 +106,24 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //-----------------------
-
-
             glBindVertexArray(VAO);
 
         for (int i = 0; i < objects.size(); i++){
             glm::vec3 objPos = objects[i].rigidBody.GetPosition();
 
-            objects[i].rigidBody.AddForce(gravity * objects[i].rigidBody.GetMass());
+            //objects[i].rigidBody.AddForce(gravity * objects[i].rigidBody.GetMass());
             objects[i].Update(deltaTime);
 
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, objPos);
-            model = glm::rotate(model, glm::radians(20.0f), glm::vec3(1.0f, 0.0f, 0.0f));
             shader.SetMat4("model", model);
 
-            glBufferData(GL_ARRAY_BUFFER, objects[i].shape->vertices.size() * sizeof(float), objects[i].shape->vertices.data(), GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, objects[i].shape->shapeSize, objects[i].shape->vertices.data(), GL_STATIC_DRAW);
                 // Draw the plane
-            glDrawArrays(GL_TRIANGLES, 0, objects[i].shape->vertices.size()/6);
+            glDrawArrays(GL_TRIANGLES, 0, objects[i].shape->numVertices);
         }
         //-----------------------
-        
+        cout<<objects[0].rigidBody.GetPosition().x<<" "<<objects[0].rigidBody.GetPosition().y<<" "<<objects[0].rigidBody.GetPosition().z<<endl;
 
 
             // View Uniforms
@@ -150,9 +151,26 @@ int main() {
 
 void ProcessUserInput(GLFWwindow* window){
     // Close the window when the user presses the ESC key
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    
+    //----------------Adding forces------------------------
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+        objects[0].rigidBody.AddForce(glm::vec3(0.0f, -1.0f, 0.0f));
     }
+
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
+        objects[0].rigidBody.AddForce(glm::vec3(0.0f, 1.0f, 0.0f));
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
+        objects[0].rigidBody.AddForce(glm::vec3(-1.0f, 0.0f, 0.0f));
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
+        objects[0].rigidBody.AddForce(glm::vec3(1.0f, 0.0f, 0.0f));
+    }
+    
 
     // Camera movements
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)

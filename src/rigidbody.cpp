@@ -76,6 +76,11 @@ void Rigidbody::Update(float deltaTime) {
     // Update the position
     position += velocity * deltaTime;
 
+    if (position.y < 0.5f) {
+        position.y = 0.5f;
+        velocity.y = 0.0f;
+    }
+
     // Clear the forces applied to the object
     ClearAccumulator();
 }

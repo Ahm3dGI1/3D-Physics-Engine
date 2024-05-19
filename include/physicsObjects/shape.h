@@ -1,5 +1,7 @@
 #ifndef SHAPE_H
 #define SHAPE_H
+#define M_PI 3.14159265358979323846
+
 
 #include <vector>
 #include <glm/glm.hpp>
@@ -8,6 +10,9 @@
 class Shape{
 public:
     std::vector<float> vertices;
+    std::vector<unsigned int> indices;
+    int numVertices;
+    float shapeSize;
 
     virtual bool Intersects(Shape* other) const = 0;
     virtual ~Shape();
@@ -18,9 +23,20 @@ public:
     float radius;
     glm::vec3 center;
 
+    const float X;
+    const float Z;
+    const float N;
+
     Sphere(float r, glm::vec3 c);
 
     bool Intersects(Shape* other) const override;
+
+    void subdivide(std::vector<float>& vertices, std::vector<unsigned int>& indices);
+
+
+
+private:
+    void GenerateSphere();
 };
 
 class Box : public Shape{
