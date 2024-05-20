@@ -4,6 +4,7 @@
 
 
 #include <vector>
+#include <map>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
@@ -31,12 +32,7 @@ public:
 
     bool Intersects(Shape* other) const override;
 
-    void subdivide(std::vector<float>& vertices, std::vector<unsigned int>& indices);
-
-
-
-private:
-    void GenerateSphere();
+    void Subdivide(std::vector<float>& vertices, std::vector<unsigned int>& indices, int depth = 3);
 };
 
 class Box : public Shape{

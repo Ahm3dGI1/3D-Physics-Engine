@@ -65,20 +65,22 @@ int main() {
 
     objects.push_back(PhysicsObject(make_unique<Plane>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.0f), glm::vec3(0.0f), 0.0f, 0.0f));
 
-    objects.push_back(PhysicsObject(make_unique<Sphere>(0.5f, glm::vec3(0.0f, 0.0f, 0.0f)), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 0.9f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(0.5f, glm::vec3(0.0f, 0.0f, 0.0f)), glm::vec3(0.0f, 5.0f, 0.0f), 1.0f, 0.9f));
 
     glm::vec3 gravity = glm::vec3(0.0f, -9.8f, 0.0f);
     //-------------------------------------------------------------------------------------
 
 
     // Vertex Array Object, Vertex Buffer Object
-    unsigned int VAO, VBO;
+    unsigned int VAO, VBO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
     // Vertex attributes
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
@@ -119,12 +121,11 @@ int main() {
             shader.SetMat4("model", model);
 
             glBufferData(GL_ARRAY_BUFFER, objects[i].shape->shapeSize, objects[i].shape->vertices.data(), GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, objects[i].shape->indices.size() * sizeof(unsigned int), objects[i].shape->indices.data(), GL_STATIC_DRAW);
                 // Draw the plane
-            glDrawArrays(GL_TRIANGLES, 0, objects[i].shape->numVertices);
+            glDrawElements(GL_TRIANGLES, objects[i].shape->numVertices, GL_UNSIGNED_INT, 0);
         }
         //-----------------------
-        cout<<objects[0].rigidBody.GetPosition().x<<" "<<objects[0].rigidBody.GetPosition().y<<" "<<objects[0].rigidBody.GetPosition().z<<endl;
-
 
             // View Uniforms
         
