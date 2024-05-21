@@ -7,6 +7,7 @@ if (mass == 0.0f) inverseMass = 0.0f;
     velocity = glm::vec3(0.0f, 0.0f, 0.0f);
     acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
     forceAccum = glm::vec3(0.0f, 0.0f, 0.0f);
+    restitution = 0.9f;
 }
 
 // Setters and Getters
@@ -44,12 +45,24 @@ float Rigidbody::GetMass() {
     return mass;
 }
 
+float Rigidbody::GetInverseMass() {
+    return inverseMass;
+}
+
 void Rigidbody::SetDamping(float damp) {
     damping = damp;
 }
 
 float Rigidbody::GetDamping() {
     return damping;
+}
+
+void Rigidbody::SetRestitution(float rest) {
+    restitution = rest;
+}
+
+float Rigidbody::GetRestitution() {
+    return restitution;
 }
 
 // Add a force to the object
@@ -75,11 +88,6 @@ void Rigidbody::Update(float deltaTime) {
 
     // Update the position
     position += velocity * deltaTime;
-
-    if (position.y < 0.5f) {
-        position.y = 0.5f;
-        velocity.y = 0.0f;
-    }
 
     // Clear the forces applied to the object
     ClearAccumulator();

@@ -17,6 +17,7 @@
                 "${workspaceFolder}/src/rigidbody.cpp",
                 "${workspaceFolder}/src/shape.cpp",
                 "${workspaceFolder}/src/physicsObjects.cpp",
+                "${workspaceFolder}/src/collisionHandler.cpp",
                 "${workspaceFolder}/src/glad.c",
                 "-lglfw3dll",
                 "-o",

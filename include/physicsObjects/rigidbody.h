@@ -15,6 +15,7 @@ protected:
     float inverseMass;
 
     float damping;
+    float restitution;
 
 public:
     Rigidbody(glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f), float m = 1.0f, float damp = 0.9f);
@@ -31,9 +32,13 @@ public:
 
     void SetMass(float m);
     float GetMass();
+    float GetInverseMass();
 
     void SetDamping(float damp);
     float GetDamping();
+
+    void SetRestitution(float rest);
+    float GetRestitution();
 
     // Add a force to the object
     void AddForce(glm::vec3 force);

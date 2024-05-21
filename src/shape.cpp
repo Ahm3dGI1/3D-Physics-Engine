@@ -1,8 +1,9 @@
 #include "physicsObjects/shape.h"
+#include <iostream>
 
 Shape::~Shape(){}
 
-Sphere::Sphere(float r, glm::vec3 c) : radius(r), center(c), X(.525731112119133606f), Z(.850650808352039932f), N(0.f){
+Sphere::Sphere(float r, float d) : radius(r), X(.525731112119133606f), Z(.850650808352039932f), N(0.f){
     vertices = {
         -X,  N,  Z,         1.0f, 0.0f, 0.0f,
          X,  N,  Z,         0.0f, 1.0f, 0.0f,
@@ -29,7 +30,16 @@ Sphere::Sphere(float r, glm::vec3 c) : radius(r), center(c), X(.5257311121191336
         6, 10, 1,   9, 11, 0,   9, 2, 11,   9, 5, 2,    7, 11, 2
     };
 
-    Subdivide(vertices, indices), 3;
+    // Scale initial vertices to the correct radius
+    for (size_t i = 0; i < vertices.size(); i += 6) {
+        glm::vec3 v(vertices[i], vertices[i + 1], vertices[i + 2]);
+        v = glm::normalize(v) * r;
+        vertices[i] = v.x;
+        vertices[i + 1] = v.y;
+        vertices[i + 2] = v.z;
+    }
+
+    Subdivide(vertices, indices, d);
 
     numVertices = indices.size();
     shapeSize = vertices.size() * sizeof(float);
@@ -50,7 +60,7 @@ void Sphere::Subdivide(std::vector<float>& vertices, std::vector<unsigned int>& 
         int idx2 = i2 * 6;
         glm::vec3 p1(vertices[idx1], vertices[idx1 + 1], vertices[idx1 + 2]);
         glm::vec3 p2(vertices[idx2], vertices[idx2 + 1], vertices[idx2 + 2]);
-        glm::vec3 midpoint = glm::normalize(p1 + p2);
+        glm::vec3 midpoint = glm::normalize(p1 + p2) * radius;
 
         // Add new vertex in the array
         int newIdx = vertices.size() / 6;
@@ -90,41 +100,37 @@ void Sphere::Subdivide(std::vector<float>& vertices, std::vector<unsigned int>& 
     }
 }
 
-bool Sphere::Intersects(Shape* other) const{
-    if (auto sphere = dynamic_cast<Sphere*>(other)){
+bool Sphere::Intersects(Shape* other) const {
+    if (auto sphere = dynamic_cast<Sphere*>(other)) {
         float distance = glm::distance(center, sphere->center);
         return distance < radius + sphere->radius;
-    }
-    else if (auto box = dynamic_cast<Box*>(other)){
+    } else if (auto box = dynamic_cast<Box*>(other)) {
         // Implement sphere-box intersection
-            // Get box closest point to sphere center by clamping
         float x = glm::max(box->minCorner.x, glm::min(center.x, box->maxCorner.x));
         float y = glm::max(box->minCorner.y, glm::min(center.y, box->maxCorner.y));
         float z = glm::max(box->minCorner.z, glm::min(center.z, box->maxCorner.z));
 
-            // This is the same as isPointInsideSphere
         float distance = glm::distance(glm::vec3(x, y, z), center);
         return distance < radius;
-    }
-    else if (auto plane = dynamic_cast<Plane*>(other)){
+    } else if (auto plane = dynamic_cast<Plane*>(other)) {
         // Implement sphere-plane intersection
-
-        return false;
+        float d = glm::dot(center - plane->center, plane->normal);        
+        return std::abs(d) <= radius;
     }
     return false;
 }
 
-Box::Box(glm::vec3 min, glm::vec3 max, glm::vec3 c, glm::quat o) : minCorner(min), maxCorner(max), center(c), orientation(o){
+Box::Box(glm::quat o) : minCorner(glm::vec3(-1.0f)), maxCorner(glm::vec3(1.0f)), orientation(o){
     vertices = {
     // Positions           // Colors
-    -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,  // 0
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  // 1
-     0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,  // 2
-    -0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f,  // 3
-    -0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  // 4
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f,  // 5
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,  // 6
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f   // 7
+    -1.0f, -1.0f, -1.0f,  1.0f, 0.0f, 0.0f,  // 0
+     1.0f, -1.0f, -1.0f,  0.0f, 1.0f, 0.0f,  // 1
+     1.0f,  1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  // 2
+    -1.0f,  1.0f, -1.0f,  1.0f, 0.0f, 0.0f,  // 3
+    -1.0f, -1.0f,  1.0f,  0.0f, 1.0f, 0.0f,  // 4
+     1.0f, -1.0f,  1.0f,  0.0f, 0.0f, 1.0f,  // 5
+     1.0f,  1.0f,  1.0f,  1.0f, 0.0f, 0.0f,  // 6
+    -1.0f,  1.0f,  1.0f,  0.0f, 1.0f, 0.0f   // 7
     };
 
     indices = {
@@ -146,34 +152,41 @@ Box::Box(glm::vec3 min, glm::vec3 max, glm::vec3 c, glm::quat o) : minCorner(min
     shapeSize = vertices.size() * sizeof(float);
 }
 
-bool Box::Intersects(Shape* other) const{
-    if (auto sphere = dynamic_cast<Sphere*>(other)){
+bool Box::Intersects(Shape* other) const {
+    if (auto sphere = dynamic_cast<Sphere*>(other)) {
         // Implement box-sphere intersection
         float x = glm::max(minCorner.x, glm::min(sphere->center.x, maxCorner.x));
         float y = glm::max(minCorner.y, glm::min(sphere->center.y, maxCorner.y));
         float z = glm::max(minCorner.z, glm::min(sphere->center.z, maxCorner.z));
 
         float distance = glm::distance(glm::vec3(x, y, z), sphere->center);
-        
         return distance < sphere->radius;
-    }
-    else if (auto box = dynamic_cast<Box*>(other)){
+    } else if (auto box = dynamic_cast<Box*>(other)) {
         // Implement box-box intersection
         return (minCorner.x <= box->maxCorner.x && maxCorner.x >= box->minCorner.x) &&
                (minCorner.y <= box->maxCorner.y && maxCorner.y >= box->minCorner.y) &&
                (minCorner.z <= box->maxCorner.z && maxCorner.z >= box->minCorner.z);
+    } else if (auto plane = dynamic_cast<Plane*>(other)) {
+        // check if the box is on the Plane /Temp/
+        glm::vec3 p = center;
+        glm::vec3 e = maxCorner - minCorner;
+        glm::vec3 n = plane->normal;
+        glm::vec3 s = plane->center;
+        float r = glm::dot(e, glm::abs(n));
+        float distance = glm::dot(n, p - s);
+        return std::abs(distance) <= r;
     }
     return false;
 }
 
-Plane::Plane(glm::vec3 c, glm::vec3 n, float d) : center(c), normal(n), distance(d){
+Plane::Plane() : normal(glm::vec3(0.0f, 1.0f, 0.0f)){
     vertices = {
             // Plane vertices
     // Positions              // Colors
-     2.0f, 0.0f,  2.0f,    1.0f, 0.0f, 0.0f, // 0
-     2.0f, 0.0f, -2.0f,    0.0f, 1.0f, 0.0f, // 1
-    -2.0f, 0.0f, -2.0f,    0.0f, 0.0f, 1.0f, // 2
-    -2.0f, 0.0f,  2.0f,    0.0f, 0.0f, 1.0f, // 3
+     1.0f, 0.0f,  1.0f,    1.0f, 0.0f, 0.0f, // 0
+     1.0f, 0.0f, -1.0f,    0.0f, 1.0f, 0.0f, // 1
+    -1.0f, 0.0f, -1.0f,    0.0f, 0.0f, 1.0f, // 2
+    -1.0f, 0.0f,  1.0f,    0.0f, 0.0f, 1.0f, // 3
     };
 
     indices = {
@@ -187,15 +200,26 @@ Plane::Plane(glm::vec3 c, glm::vec3 n, float d) : center(c), normal(n), distance
     shapeSize = vertices.size() * sizeof(float);
 }
 
-bool Plane::Intersects(Shape* other) const{
-    if (auto sphere = dynamic_cast<Sphere*>(other)){
+bool Plane::Intersects(Shape* other) const {
+    if (auto sphere = dynamic_cast<Sphere*>(other)) {
         // Implement plane-sphere intersection
-        float distance = glm::dot(sphere->center, normal);
-        return distance < sphere->radius + distance;
-    }
-    else if (auto box = dynamic_cast<Box*>(other)){
+        float distance = glm::dot(sphere->center - center, normal);
+        return std::abs(distance) <= sphere->radius;
+    } else if (auto box = dynamic_cast<Box*>(other)) {
         // Implement plane-box intersection
-        return false;
+        glm::vec3 halfSize = (box->maxCorner - box->minCorner) * 0.5f;
+        glm::vec3 boxCenter = box->minCorner + halfSize;
+
+        // Project the half extents of the box onto the plane normal
+        float projection = halfSize.x * std::abs(normal.x) + 
+                           halfSize.y * std::abs(normal.y) + 
+                           halfSize.z * std::abs(normal.z);
+
+        // Calculate the distance from the center of the box to the plane
+        float distance = glm::dot(boxCenter - center, normal);
+
+        // Check if the distance is within the projection
+        return std::abs(distance) <= projection;
     }
     return false;
 }

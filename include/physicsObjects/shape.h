@@ -28,7 +28,7 @@ public:
     const float Z;
     const float N;
 
-    Sphere(float r, glm::vec3 c);
+    Sphere(float r, float d);
 
     bool Intersects(Shape* other) const override;
 
@@ -42,7 +42,7 @@ public:
     glm::quat orientation;           // For OBB
 
 
-    Box(glm::vec3 min, glm::vec3 max, glm::vec3 c = glm::vec3(0.0f, 0.0f, 0.0f), glm::quat o = glm::quat(1.0f, 0.0f, 0.0f, 0.0f));
+    Box(glm::quat o = glm::quat(1.0f, 0.0f, 0.0f, 0.0f));
 
     bool Intersects(Shape* other) const override;
 };
@@ -51,10 +51,8 @@ class Plane : public Shape{
 public:
     glm::vec3 center;
     glm::vec3 normal;
-    float distance;
-
     
-    Plane(glm::vec3 c, glm::vec3 n, float d);
+    Plane();
 
     bool Intersects(Shape* other) const override;
 };

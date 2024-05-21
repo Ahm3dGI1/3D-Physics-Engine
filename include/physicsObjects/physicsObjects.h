@@ -12,6 +12,8 @@ public:
     Rigidbody rigidBody;
 
     PhysicsObject(std::unique_ptr<Shape> s, glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f), float m = 1.0f, float damp = 0.9f);
+
+    Shape* GetShape() const;
     
     void Update(float deltaTime);
 };

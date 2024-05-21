@@ -5,6 +5,7 @@
 #include "shaders/shaders.h"
 #include "camera/camera.h"
 #include "physicsObjects/physicsObjects.h"
+#include "collisions/collisionHandler.h"
 
 
 using namespace std; 
@@ -18,7 +19,7 @@ void ProcessUserInput(GLFWwindow* window);
 void MouseCallback(GLFWwindow * window, double xPosIn, double yPosIn);
 
 // Create a camera object
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 5.0f, 10.0f));
 bool firstMouse = true;
 float lastX = WINDOW_WIDTH / 2.0;
 float lastY = WINDOW_HEIGHT / 2.0;
@@ -30,6 +31,8 @@ float lastFrame = 0.0f;
 
 // Physics Objects
 vector<PhysicsObject> objects;
+
+CollisionHandler collisionHandler;
 
 int main() {
 
@@ -61,11 +64,15 @@ int main() {
 
     //-------------------------------------------------------------------------------------
 
-    objects.push_back(PhysicsObject(make_unique<Box>(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f)), glm::vec3(0.0f, 10.0f, 0.0f), 1.0f, 0.9f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 5.0f, 0.0f), 1.0f, 0.9f));
 
-    objects.push_back(PhysicsObject(make_unique<Plane>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.0f), glm::vec3(0.0f), 0.0f, 0.0f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(5.0f, 3.0f, 0.0f), 1.0f, 0.9f));
 
-    objects.push_back(PhysicsObject(make_unique<Sphere>(0.5f, glm::vec3(0.0f, 0.0f, 0.0f)), glm::vec3(0.0f, 5.0f, 0.0f), 1.0f, 0.9f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(-5.0f, 3.0f, 0.0f), 1.0f, 0.9f));
+
+    objects.push_back(PhysicsObject(make_unique<Box>(), glm::vec3(0.0f, 10.0f, 0.0f), 1.0f, 0.9f));
+
+    objects.push_back(PhysicsObject(make_unique<Plane>(), glm::vec3(0.0f), 0.0f, 0.0f));
 
     glm::vec3 gravity = glm::vec3(0.0f, -9.8f, 0.0f);
     //-------------------------------------------------------------------------------------
@@ -115,6 +122,7 @@ int main() {
 
             //objects[i].rigidBody.AddForce(gravity * objects[i].rigidBody.GetMass());
             objects[i].Update(deltaTime);
+            objects[i].rigidBody.AddForce(gravity * objects[i].rigidBody.GetMass());
 
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, objPos);
@@ -125,6 +133,15 @@ int main() {
                 // Draw the plane
             glDrawElements(GL_TRIANGLES, objects[i].shape->numVertices, GL_UNSIGNED_INT, 0);
         }
+
+        for (int i = 0; i < objects.size(); i++){
+            for (int j = i + 1; j < objects.size(); j++){
+                if (objects[i].shape->Intersects(objects[j].shape.get())){
+                    collisionHandler.ResolveCollision(objects[i], objects[j]);
+                }
+            }
+        }
+
         //-----------------------
 
             // View Uniforms
@@ -135,9 +152,6 @@ int main() {
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(45.0f), WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.0f); 
         shader.SetMat4("projection", projection);
-
-
-
 
         // Swap the front and back buffers and poll for IO events
         glfwSwapBuffers(window);
@@ -157,19 +171,19 @@ void ProcessUserInput(GLFWwindow* window){
     
     //----------------Adding forces------------------------
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
-        objects[0].rigidBody.AddForce(glm::vec3(0.0f, -1.0f, 0.0f));
+        objects[2].rigidBody.AddForce(glm::vec3(0.0f, -3.0f, 0.0f));
     }
 
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
-        objects[0].rigidBody.AddForce(glm::vec3(0.0f, 1.0f, 0.0f));
+        objects[2].rigidBody.AddForce(glm::vec3(0.0f, 3.0f, 0.0f));
     }
 
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
-        objects[0].rigidBody.AddForce(glm::vec3(-1.0f, 0.0f, 0.0f));
+        objects[2].rigidBody.AddForce(glm::vec3(-3.0f, 0.0f, 0.0f));
     }
 
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
-        objects[0].rigidBody.AddForce(glm::vec3(1.0f, 0.0f, 0.0f));
+        objects[2].rigidBody.AddForce(glm::vec3(3.0f, 0.0f, 0.0f));
     }
     
 
