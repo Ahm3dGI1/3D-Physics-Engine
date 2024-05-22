@@ -100,18 +100,20 @@ void Sphere::Subdivide(std::vector<float>& vertices, std::vector<unsigned int>& 
     }
 }
 
-Box::Box(glm::quat o) : minCorner(glm::vec3(-1.0f)), maxCorner(glm::vec3(1.0f)), orientation(o){
-    vertices = {
-    // Positions           // Colors
-    -1.0f, -1.0f, -1.0f,  1.0f, 0.0f, 0.0f,  // 0
-     1.0f, -1.0f, -1.0f,  0.0f, 1.0f, 0.0f,  // 1
-     1.0f,  1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  // 2
-    -1.0f,  1.0f, -1.0f,  1.0f, 0.0f, 0.0f,  // 3
-    -1.0f, -1.0f,  1.0f,  0.0f, 1.0f, 0.0f,  // 4
-     1.0f, -1.0f,  1.0f,  0.0f, 0.0f, 1.0f,  // 5
-     1.0f,  1.0f,  1.0f,  1.0f, 0.0f, 0.0f,  // 6
-    -1.0f,  1.0f,  1.0f,  0.0f, 1.0f, 0.0f   // 7
+Box::Box() : minCorner(glm::vec3(-1.0f)), maxCorner(glm::vec3(1.0f)){
+    originalVertices = {
+        // Positions           // Colors
+        -1.0f, -1.0f, -1.0f,  1.0f, 0.0f, 0.0f,  // 0
+         1.0f, -1.0f, -1.0f,  0.0f, 1.0f, 0.0f,  // 1
+         1.0f,  1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  // 2
+        -1.0f,  1.0f, -1.0f,  1.0f, 0.0f, 0.0f,  // 3
+        -1.0f, -1.0f,  1.0f,  0.0f, 1.0f, 0.0f,  // 4
+         1.0f, -1.0f,  1.0f,  0.0f, 0.0f, 1.0f,  // 5
+         1.0f,  1.0f,  1.0f,  1.0f, 0.0f, 0.0f,  // 6
+        -1.0f,  1.0f,  1.0f,  0.0f, 1.0f, 0.0f   // 7
     };
+
+    vertices = originalVertices;
 
     indices = {
     // Front face
@@ -128,8 +130,29 @@ Box::Box(glm::quat o) : minCorner(glm::vec3(-1.0f)), maxCorner(glm::vec3(1.0f)),
     0, 1, 5,  0, 5, 4
     };
 
-    numVertices = 36;
+    numVertices = indices.size();
     shapeSize = vertices.size() * sizeof(float);
+}
+
+void Box::UpdateShape(const glm::vec3& position, const glm::mat3& orientation) {
+    // Update the shape's position
+    center = position;
+
+
+    // Update the shape's verticies
+    for (size_t i = 0; i < originalVertices.size(); i += 6) {
+        glm::vec3 originalPos(originalVertices[i], originalVertices[i + 1], originalVertices[i + 2]);
+        glm::vec3 transformedPos = orientation * originalPos;
+
+        vertices[i] = transformedPos.x;
+        vertices[i + 1] = transformedPos.y;
+        vertices[i + 2] = transformedPos.z;
+
+        // Colors remain unchanged
+        vertices[i + 3] = originalVertices[i + 3];
+        vertices[i + 4] = originalVertices[i + 4];
+        vertices[i + 5] = originalVertices[i + 5];
+    }
 }
 
 Plane::Plane() : normal(glm::vec3(0.0f, 1.0f, 0.0f)){

@@ -11,6 +11,7 @@
 class Shape{
 public:
     std::vector<float> vertices;
+    std::vector<float> originalVertices;
     std::vector<unsigned int> indices;
     int numVertices;
     float shapeSize;
@@ -36,10 +37,11 @@ class Box : public Shape{
 public:
     glm::vec3 minCorner, maxCorner;  // For AABB
     glm::vec3 center;                // For OBB
-    glm::quat orientation;           // For OBB
+    glm::mat3 orientation;           // For OBB
 
 
-    Box(glm::quat o = glm::quat(1.0f, 0.0f, 0.0f, 0.0f));
+    Box();
+    void UpdateShape(const glm::vec3& position ,const glm::mat3& orientation);
 };
 
 class Plane : public Shape{

@@ -51,23 +51,32 @@ void CollisionHandler::ResolveCollision(PhysicsObject& object1, PhysicsObject& o
             float movePerMass = penetration / totalInvMass;
 
             // Separating the sphere and the box by moving them in the opposite direction of the collision normal by an amount relative to their mass
-            object1.rigidBody.SetPosition(object1.rigidBody.GetPosition() + collisionNormal * movePerMass * object1.rigidBody.GetInverseMass());
-            object2.rigidBody.SetPosition(object2.rigidBody.GetPosition() - collisionNormal * movePerMass * object2.rigidBody.GetInverseMass());
+            object1.rigidBody.SetPosition(object1.rigidBody.GetPosition() + collisionNormal * penetration);
 
             // Calculate the new velocity of the sphere and the box after the collision using impulses
-            glm::vec3 relativeVelocity = object1.rigidBody.GetVelocity() - object2.rigidBody.GetVelocity();
-            float separatingVelocity = glm::dot(relativeVelocity, collisionNormal);
+            glm::vec3 contactPoint = closestPoint;
+            glm::vec3 contactVectorBox = contactPoint - box2->center;
+
+
+
+            glm::vec3 relativeVelocity = object1.rigidBody.GetVelocity()
+                                   - object2.rigidBody.GetVelocity() - glm::cross(object2.rigidBody.GetAngularVelocity(), contactVectorBox);
+
+
+            float velocityAlongNormal = glm::dot(relativeVelocity, collisionNormal);
 
             float e = std::min(object1.rigidBody.GetRestitution(), object2.rigidBody.GetRestitution());
 
-            float deltaSepVelocity = -(1 + e) * separatingVelocity;
+            float deltaSepVelocity = -(1 + e) * velocityAlongNormal;
 
-            float impulse = deltaSepVelocity / totalInvMass;
+            float impulse = deltaSepVelocity / (totalInvMass + glm::dot(collisionNormal, glm::cross(object2.rigidBody.GetInverseInertiaTensor() * glm::cross(contactVectorBox, collisionNormal), contactVectorBox)));
 
             glm::vec3 impulsePerMass = collisionNormal * impulse;
 
             object1.rigidBody.SetVelocity(object1.rigidBody.GetVelocity() + impulsePerMass * object1.rigidBody.GetInverseMass());
+
             object2.rigidBody.SetVelocity(object2.rigidBody.GetVelocity() - impulsePerMass * object2.rigidBody.GetInverseMass());
+            object2.rigidBody.SetAngularVelocity(object2.rigidBody.GetAngularVelocity() + glm::cross(contactVectorBox ,impulsePerMass) * object2.rigidBody.GetInverseInertiaTensor());
         }
 
         else if (Plane* plane2 = dynamic_cast<Plane*>(shape2)){
