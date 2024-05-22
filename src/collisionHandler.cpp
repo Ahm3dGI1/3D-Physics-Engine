@@ -98,128 +98,91 @@ void CollisionHandler::ResolveCollision(PhysicsObject& object1, PhysicsObject& o
     }
 }
 
+bool CollisionHandler::CheckCollision(PhysicsObject& object1, PhysicsObject& object2){
+    Shape* shape1 = object1.GetShape();
+    Shape* shape2 = object2.GetShape();
 
+    if (Sphere* sphere1 = dynamic_cast<Sphere*>(shape1)){
+        if (Sphere* sphere2 = dynamic_cast<Sphere*>(shape2)){
+            // Sphere-Sphere collision
+            glm::vec3 collisionNormal = sphere1->center - sphere2->center;
+            float distance = glm::length(collisionNormal);
+            collisionNormal = glm::normalize(collisionNormal);
 
-
-
-
-
-// ANOTHER APPROACH BACKUP
-
-/*
-// Note For me: The Calculations are done from the prespective of the first object
-CollisionHandler::CollisionHandler(PhysicsObject *o1, PhysicsObject *o2, float rest)
-    : object1(o1), object2(o2), restitution(rest){
-    // Calculate the collision normal
-    collisionNormal = glm::normalize(object1->rigidBody.GetPosition() - object2->rigidBody.GetPosition());
-}
-
-void CollisionHandler::Resolve(float deltaTime) {
-    ResolveVelocity(deltaTime);
-    ResolveInterpenetration(deltaTime);
-}
-
-float CollisionHandler::CalculateSeparatingVelocity() const {
-    glm::vec3 relativeVelocity = object1->rigidBody.GetVelocity();
-    if (object2) 
-        relativeVelocity -= object2->rigidBody.GetVelocity();
-    return glm::dot(relativeVelocity, collisionNormal);
-}
-
-void CollisionHandler::ResolveVelocity(float deltaTime){
-    // Calculate the separating velocity in the direction of the collision normal
-    float separatingVelocity = CalculateSeparatingVelocity();
-
-    // Check if the collision needs to be resolved
-    if (separatingVelocity > 0) return; // The contact is separating (moving away from each other) or stationary
-
-    // Calculate the new separating velocity according to the coefficient of restitution
-    float newSepVelocity = -separatingVelocity * restitution;
-
-    // Check the velocity buildup due to acceleration only
-    glm::vec3 accCausedVelocity = object1->rigidBody.GetAcceleration();
-    if (object2) accCausedVelocity -= object2->rigidBody.GetAcceleration();
-
-    float accCausedSepVelocity = glm::dot(accCausedVelocity, collisionNormal) * deltaTime;
-
-    if (accCausedSepVelocity < 0) {
-        newSepVelocity += restitution * accCausedSepVelocity;
-
-        if (newSepVelocity < 0) newSepVelocity = 0;
-    }
-
-    // Check the change in the velocity to apply it to each object according to its mass (more mass = less change in velocity)
-    float deltaSepVelocity = newSepVelocity - separatingVelocity;
-
-    float totalInvMass = object1->rigidBody.GetInverseMass();
-    if (object2) totalInvMass += object2->rigidBody.GetInverseMass();
-
-    // Check if the objects have infinite mass
-    if (totalInvMass <= 0) return;
-
-    // Calculate the impulse to apply to each object
-    float impulse = deltaSepVelocity / totalInvMass;
-
-    // Calculate the impulse to apply to each object according to its mass
-    glm::vec3 impulsePerMass = collisionNormal * impulse;
-
-    // Apply the impulse to the objects
-    object1->rigidBody.SetVelocity(object1->rigidBody.GetVelocity() + impulsePerMass * object1->rigidBody.GetInverseMass());
-
-    if (object2) {
-        // The second object goes in the opposite direction
-        object2->rigidBody.SetVelocity(object2->rigidBody.GetVelocity() - impulsePerMass * object2->rigidBody.GetInverseMass());
-    }
-}
-
-void CollisionHandler::ResolveInterpenetration(float deltaTime){
-    if (penetrationDepth <= 0) return; // No penetration
-
-    // The calculations are relatice to the inverse mass since bigger mass means less movement
-    float totalInvMass = object1->rigidBody.GetInverseMass();
-    if (object2) totalInvMass += object2->rigidBody.GetInverseMass();
-
-    if (totalInvMass <= 0) return; // Infinite mass means we have nothing to do
-
-    glm::vec3 movePerMass = collisionNormal * (penetrationDepth / totalInvMass);
-
-    // Move the objects
-    object1->rigidBody.SetPosition(object1->rigidBody.GetPosition() + movePerMass * object1->rigidBody.GetInverseMass());
-
-    if (object2) {
-        object2->rigidBody.SetPosition(object2->rigidBody.GetPosition() + movePerMass * object2->rigidBody.GetInverseMass());
-    }
-}
-
-
-// ********************** CollisionResolver **********************
-
-CollisionResolver::CollisionResolver(unsigned iters) : iterations(iters), iterationsUsed(0) {}
-
-void CollisionResolver::SetIterations(unsigned iters) {
-    iterations = iters;
-}
-
-void CollisionResolver::ResolveCollision(CollisionHandler *collisionArray, unsigned numCollisions, float deltaTime){
-    iterationsUsed = 0;
-
-    while (iterationsUsed < iterations) {
-        float maxSepVelocity = 0;
-        unsigned maxIndex = numCollisions;
-
-        for (unsigned i = 0; i < numCollisions; i++) {
-            float sepVelocity = collisionArray[i].CalculateSeparatingVelocity();
-
-            if (sepVelocity < maxSepVelocity) {
-                maxSepVelocity = sepVelocity;
-                maxIndex = i;
-            }
+            return distance < sphere1->radius + sphere2->radius;
         }
 
-        if (maxIndex == numCollisions) break;
+        else if (Box* box2 = dynamic_cast<Box*>(shape2)){
+            // Sphere-Box collision
+            glm::vec3 closestPoint = glm::clamp(object1.rigidBody.GetPosition(), box2->minCorner, box2->maxCorner);
+            glm::vec3 collisionNormal = object1.rigidBody.GetPosition() - closestPoint;
+            float distance = glm::length(collisionNormal);
+            collisionNormal = glm::normalize(collisionNormal);
 
-        collisionArray[maxIndex].Resolve(deltaTime);
-        iterationsUsed++;
+            return distance < sphere1->radius;
+        }
+
+        else if (Plane* plane2 = dynamic_cast<Plane*>(shape2)){
+            // Sphere-Plane collision
+            glm::vec3 collisionNormal = plane2->normal;
+            float distance = glm::dot(object1.rigidBody.GetPosition() - plane2->center, collisionNormal);
+
+            return distance < sphere1->radius;
+        }
     }
+
+    else if (Box* box1 = dynamic_cast<Box*>(shape1)){
+        if (Sphere* sphere2 = dynamic_cast<Sphere*>(shape2)){
+            // Sphere-Box collision
+            glm::vec3 closestPoint = glm::clamp(object2.rigidBody.GetPosition(), box1->minCorner, box1->maxCorner);
+            glm::vec3 collisionNormal = object2.rigidBody.GetPosition() - closestPoint;
+            float distance = glm::length(collisionNormal);
+            collisionNormal = glm::normalize(collisionNormal);
+
+            return distance < sphere2->radius;
+        }
+
+        else if (Box* box2 = dynamic_cast<Box*>(shape2)){
+            // Box-Box collision
+            return (box1->minCorner.x <= box2->maxCorner.x && box1->maxCorner.x >= box2->minCorner.x) &&
+                   (box1->minCorner.y <= box2->maxCorner.y && box1->maxCorner.y >= box2->minCorner.y) &&
+                   (box1->minCorner.z <= box2->maxCorner.z && box1->maxCorner.z >= box2->minCorner.z);
+        }
+
+        else if (Plane* plane2 = dynamic_cast<Plane*>(shape2)){
+            // Box-Plane collision
+            glm::vec3 p = box1->center;
+            glm::vec3 e = box1->maxCorner - box1->minCorner;
+            glm::vec3 n = plane2->normal;
+            glm::vec3 s = plane2->center;
+            float r = glm::dot(e, glm::abs(n));
+            float distance = glm::dot(n, p - s);
+
+            return std::abs(distance) <= r;
+        }
+    }
+
+    else if (Plane* plane1 = dynamic_cast<Plane*>(shape1)){
+        if (Sphere* sphere2 = dynamic_cast<Sphere*>(shape2)){
+            // Sphere-Plane collision
+            glm::vec3 collisionNormal = plane1->normal;
+            float distance = glm::dot(object2.rigidBody.GetPosition() - plane1->center, collisionNormal);
+
+            return distance < sphere2->radius;
+        }
+
+        else if (Box* box2 = dynamic_cast<Box*>(shape2)){
+            // Box-Plane collision
+            glm::vec3 p = box2->center;
+            glm::vec3 e = box2->maxCorner - box2->minCorner;
+            glm::vec3 n = plane1->normal;
+            glm::vec3 s = plane1->center;
+            float r = glm::dot(e, glm::abs(n));
+            float distance = glm::dot(n, p - s);
+
+            return std::abs(distance) <= r;
+        }
+    }
+
+    return false;
 }
-*/

@@ -7,7 +7,7 @@ if (mass == 0.0f) inverseMass = 0.0f;
     velocity = glm::vec3(0.0f, 0.0f, 0.0f);
     acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
     forceAccum = glm::vec3(0.0f, 0.0f, 0.0f);
-    restitution = 0.9f;
+    restitution = 0.7f;
 }
 
 // Setters and Getters

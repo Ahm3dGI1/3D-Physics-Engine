@@ -100,26 +100,6 @@ void Sphere::Subdivide(std::vector<float>& vertices, std::vector<unsigned int>& 
     }
 }
 
-bool Sphere::Intersects(Shape* other) const {
-    if (auto sphere = dynamic_cast<Sphere*>(other)) {
-        float distance = glm::distance(center, sphere->center);
-        return distance < radius + sphere->radius;
-    } else if (auto box = dynamic_cast<Box*>(other)) {
-        // Implement sphere-box intersection
-        float x = glm::max(box->minCorner.x, glm::min(center.x, box->maxCorner.x));
-        float y = glm::max(box->minCorner.y, glm::min(center.y, box->maxCorner.y));
-        float z = glm::max(box->minCorner.z, glm::min(center.z, box->maxCorner.z));
-
-        float distance = glm::distance(glm::vec3(x, y, z), center);
-        return distance < radius;
-    } else if (auto plane = dynamic_cast<Plane*>(other)) {
-        // Implement sphere-plane intersection
-        float d = glm::dot(center - plane->center, plane->normal);        
-        return std::abs(d) <= radius;
-    }
-    return false;
-}
-
 Box::Box(glm::quat o) : minCorner(glm::vec3(-1.0f)), maxCorner(glm::vec3(1.0f)), orientation(o){
     vertices = {
     // Positions           // Colors
@@ -152,33 +132,6 @@ Box::Box(glm::quat o) : minCorner(glm::vec3(-1.0f)), maxCorner(glm::vec3(1.0f)),
     shapeSize = vertices.size() * sizeof(float);
 }
 
-bool Box::Intersects(Shape* other) const {
-    if (auto sphere = dynamic_cast<Sphere*>(other)) {
-        // Implement box-sphere intersection
-        float x = glm::max(minCorner.x, glm::min(sphere->center.x, maxCorner.x));
-        float y = glm::max(minCorner.y, glm::min(sphere->center.y, maxCorner.y));
-        float z = glm::max(minCorner.z, glm::min(sphere->center.z, maxCorner.z));
-
-        float distance = glm::distance(glm::vec3(x, y, z), sphere->center);
-        return distance < sphere->radius;
-    } else if (auto box = dynamic_cast<Box*>(other)) {
-        // Implement box-box intersection
-        return (minCorner.x <= box->maxCorner.x && maxCorner.x >= box->minCorner.x) &&
-               (minCorner.y <= box->maxCorner.y && maxCorner.y >= box->minCorner.y) &&
-               (minCorner.z <= box->maxCorner.z && maxCorner.z >= box->minCorner.z);
-    } else if (auto plane = dynamic_cast<Plane*>(other)) {
-        // check if the box is on the Plane /Temp/
-        glm::vec3 p = center;
-        glm::vec3 e = maxCorner - minCorner;
-        glm::vec3 n = plane->normal;
-        glm::vec3 s = plane->center;
-        float r = glm::dot(e, glm::abs(n));
-        float distance = glm::dot(n, p - s);
-        return std::abs(distance) <= r;
-    }
-    return false;
-}
-
 Plane::Plane() : normal(glm::vec3(0.0f, 1.0f, 0.0f)){
     vertices = {
             // Plane vertices
@@ -198,28 +151,4 @@ Plane::Plane() : normal(glm::vec3(0.0f, 1.0f, 0.0f)){
 
     numVertices = 6;
     shapeSize = vertices.size() * sizeof(float);
-}
-
-bool Plane::Intersects(Shape* other) const {
-    if (auto sphere = dynamic_cast<Sphere*>(other)) {
-        // Implement plane-sphere intersection
-        float distance = glm::dot(sphere->center - center, normal);
-        return std::abs(distance) <= sphere->radius;
-    } else if (auto box = dynamic_cast<Box*>(other)) {
-        // Implement plane-box intersection
-        glm::vec3 halfSize = (box->maxCorner - box->minCorner) * 0.5f;
-        glm::vec3 boxCenter = box->minCorner + halfSize;
-
-        // Project the half extents of the box onto the plane normal
-        float projection = halfSize.x * std::abs(normal.x) + 
-                           halfSize.y * std::abs(normal.y) + 
-                           halfSize.z * std::abs(normal.z);
-
-        // Calculate the distance from the center of the box to the plane
-        float distance = glm::dot(boxCenter - center, normal);
-
-        // Check if the distance is within the projection
-        return std::abs(distance) <= projection;
-    }
-    return false;
 }

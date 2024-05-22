@@ -136,7 +136,7 @@ int main() {
 
         for (int i = 0; i < objects.size(); i++){
             for (int j = i + 1; j < objects.size(); j++){
-                if (objects[i].shape->Intersects(objects[j].shape.get())){
+                if (collisionHandler.CheckCollision(objects[i], objects[j])){
                     collisionHandler.ResolveCollision(objects[i], objects[j]);
                 }
             }

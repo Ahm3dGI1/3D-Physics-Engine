@@ -15,7 +15,6 @@ public:
     int numVertices;
     float shapeSize;
 
-    virtual bool Intersects(Shape* other) const = 0;
     virtual ~Shape();
 };
 
@@ -30,8 +29,6 @@ public:
 
     Sphere(float r, float d);
 
-    bool Intersects(Shape* other) const override;
-
     void Subdivide(std::vector<float>& vertices, std::vector<unsigned int>& indices, int depth = 3);
 };
 
@@ -43,8 +40,6 @@ public:
 
 
     Box(glm::quat o = glm::quat(1.0f, 0.0f, 0.0f, 0.0f));
-
-    bool Intersects(Shape* other) const override;
 };
 
 class Plane : public Shape{
@@ -53,8 +48,6 @@ public:
     glm::vec3 normal;
     
     Plane();
-
-    bool Intersects(Shape* other) const override;
 };
 
 #endif //SHAPE_H
