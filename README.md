@@ -31,3 +31,12 @@ This project is a 3D physics engine implemented using C++ and OpenGL. The engine
  - You can adjust various physics parameters in the configuration file (config.ini). Parameters include gravity, mass of objects, and coefficients of restitution.
 
 ## Demos
+
+## Contributing
+Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for more details.
+
+## Contact
+For any questions or inquiries, please contact Moustafa Mahmoud at your-email@example.com.
