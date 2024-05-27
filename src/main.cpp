@@ -10,8 +10,8 @@
 
 using namespace std; 
 
-float WINDOW_WIDTH = 800;
-float WINDOW_HEIGHT = 600;
+float WINDOW_WIDTH = 1200;
+float WINDOW_HEIGHT = 900;
 
 
 // Functions prototypes
@@ -60,7 +60,7 @@ int main() {
     glEnable(GL_DEPTH_TEST);
 
     // Create the shader program
-    Shader shader("res/shaders/basic.vert", "res/shaders/basic.frag");
+    Shader shader("../res/shaders/basic.vert", "../res/shaders/basic.frag"); // Path relative to the demo file
 
     //-------------------------------------------------------------------------------------
 
@@ -198,7 +198,7 @@ void ProcessUserInput(GLFWwindow* window){
     
     //----------------Adding forces------------------------
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        objects[0].rigidBody.AddForce(glm::vec3(-100000.0f, 0.0f, -100000.0f));
+        objects[0].rigidBody.AddForce(glm::vec3(-1000.0f, 0.0f, -1000.0f));
     }
 
     // Camera movements

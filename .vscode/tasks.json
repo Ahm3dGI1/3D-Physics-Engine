@@ -25,7 +25,7 @@
                 "${workspaceFolder}/src/glad.c",
                 "-lglfw3dll",
                 "-o",
-                "${workspaceFolder}/utable.exe"
+                "${workspaceFolder}/demos/Falling Balls.exe"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

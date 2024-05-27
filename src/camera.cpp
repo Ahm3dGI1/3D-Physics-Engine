@@ -2,7 +2,7 @@
 
 // Default camera properties
     // Movement
-float SPEED = 25.0f;
+float SPEED = 15.0f;
 float SENSITIVITY = 0.2f;
 
     // Euler angles
