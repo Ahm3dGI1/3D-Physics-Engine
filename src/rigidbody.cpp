@@ -141,7 +141,7 @@ void Rigidbody::Update(float deltaTime) {
     position += velocity * deltaTime;
 
     // Update the orientation
-    UpdateOrientation(deltaTime);
+    //UpdateOrientation(deltaTime);
 
     // Clear the forces applied to the object
     ClearForceAccumulator();

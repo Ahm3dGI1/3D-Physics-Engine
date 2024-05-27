@@ -1,8 +1,8 @@
 #ifndef PHYSICS_OBJECTS_H
 #define PHYSICS_OBJECTS_H
 
-#include <glm/glm.hpp>
 #include <memory>
+
 #include "shape.h"
 #include "rigidbody.h"
 

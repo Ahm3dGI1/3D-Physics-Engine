@@ -2,8 +2,8 @@
 
 // Default camera properties
     // Movement
-float SPEED = 2.5f;
-float SENSITIVITY = 0.1f;
+float SPEED = 25.0f;
+float SENSITIVITY = 0.2f;
 
     // Euler angles
 float YAW = -90.0f;
@@ -15,12 +15,6 @@ Camera::Camera(glm::vec3 Pos, glm::vec3 WorldUp, float Pitch, float Yaw)
     UpdateCameraVectors();
 }
 
-// Constructor with individual components
-Camera::Camera(float Posx, float Posy, float Posz, float WorldUpx, float WorldUpy, float WorldUpz, float Pitch, float Yaw)
-: pos(glm::vec3(Posx, Posy, Posz)), worldUp(glm::vec3(WorldUpx, WorldUpy, WorldUpz)), front(glm::vec3(0.0f, 0.0f, -1.0f)), pitch(Pitch), yaw(Yaw), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY) {
-    UpdateCameraVectors();
-}
-    
 // Generate a view matrex for the view uniform
 glm::mat4 Camera::GetViewMat(){
     return glm::lookAt(pos, pos + front, up);

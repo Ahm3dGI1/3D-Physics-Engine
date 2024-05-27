@@ -5,18 +5,18 @@ Shape::~Shape(){}
 
 Sphere::Sphere(float r, float d) : radius(r), X(.525731112119133606f), Z(.850650808352039932f), N(0.f){
     vertices = {
-        -X,  N,  Z,         1.0f, 0.0f, 0.0f,
-         X,  N,  Z,         0.0f, 1.0f, 0.0f,
-        -X,  N, -Z,         0.0f, 0.0f, 1.0f,
-         X,  N, -Z,         1.0f, 0.0f, 0.0f,
-         N,  Z,  X,         0.0f, 1.0f, 0.0f,
-         N,  Z, -X,         0.0f, 0.0f, 1.0f,
-         N, -Z,  X,         1.0f, 0.0f, 0.0f,
-         N, -Z, -X,         0.0f, 1.0f, 0.0f,
-         Z,  X,  N,         0.0f, 0.0f, 1.0f,
-        -Z,  X,  N,         1.0f, 0.0f, 0.0f,
-         Z, -X,  N,         0.0f, 1.0f, 0.0f,
-        -Z, -X,  N,         0.0f, 0.0f, 1.0f
+        -X,  N,  Z,         0.941f, 0.584f, 0.173f,
+         X,  N,  Z,         0.941f, 0.584f, 0.173f,
+        -X,  N, -Z,         0.900f, 0.543f, 0.132f,
+         X,  N, -Z,         0.800f, 0.443f, 0.032f,
+         N,  Z,  X,         0.800f, 0.443f, 0.032f,
+         N,  Z, -X,         0.800f, 0.443f, 0.032f,
+         N, -Z,  X,         0.800f, 0.443f, 0.032f,
+         N, -Z, -X,         0.800f, 0.443f, 0.032f,
+         Z,  X,  N,         0.700f, 0.300f, 0.100f,
+        -Z,  X,  N,         0.700f, 0.300f, 0.100f,
+         Z, -X,  N,         0.700f, 0.300f, 0.100f,
+        -Z, -X,  N,         0.700f, 0.300f, 0.100f   
     };
 
     indices = {
@@ -138,7 +138,7 @@ void Box::UpdateShape(const glm::vec3& position, const glm::mat3& orientation) {
     // Update the shape's position
     center = position;
 
-
+    /*
     // Update the shape's verticies
     for (size_t i = 0; i < originalVertices.size(); i += 6) {
         glm::vec3 originalPos(originalVertices[i], originalVertices[i + 1], originalVertices[i + 2]);
@@ -153,16 +153,16 @@ void Box::UpdateShape(const glm::vec3& position, const glm::mat3& orientation) {
         vertices[i + 4] = originalVertices[i + 4];
         vertices[i + 5] = originalVertices[i + 5];
     }
+    */
 }
 
 Plane::Plane() : normal(glm::vec3(0.0f, 1.0f, 0.0f)){
     vertices = {
-            // Plane vertices
-    // Positions              // Colors
-     1.0f, 0.0f,  1.0f,    1.0f, 0.0f, 0.0f, // 0
-     1.0f, 0.0f, -1.0f,    0.0f, 1.0f, 0.0f, // 1
-    -1.0f, 0.0f, -1.0f,    0.0f, 0.0f, 1.0f, // 2
-    -1.0f, 0.0f,  1.0f,    0.0f, 0.0f, 1.0f, // 3
+    // Positions                // Colors
+     100.0f, 0.0f,  100.0f,    .4f, .4f, .4f, // 0
+     100.0f, 0.0f, -100.0f,    .4f, .4f, .4f, // 1
+    -100.0f, 0.0f, -100.0f,    .4f, .4f, .4f, // 2
+    -100.0f, 0.0f,  100.0f,    .4f, .4f, .4f, // 3
     };
 
     indices = {

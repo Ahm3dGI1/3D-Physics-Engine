@@ -18,8 +18,6 @@ void PhysicsObject::Update(float deltaTime){
         
         box->UpdateShape(rigidBody.GetPosition(), rigidBody.GetOrientation());
 
-
-
         box->maxCorner = box->center + glm::vec3(1.0f);
         box->minCorner = box->center - glm::vec3(1.0f);
 

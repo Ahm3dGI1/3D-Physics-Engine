@@ -41,9 +41,6 @@ public:
     // Constructor w vectors
     Camera(glm::vec3 Pos = glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3 WorldUp = glm::vec3(0.0f, 1.0f, 0.0f), float Pitch = PITCH, float Yaw = YAW);
 
-    // Constructor w/ vectors
-    Camera(float Posx = 0.0f, float Posy = 0.0f, float Posz = 3.0f, float WorldUpx = 0.0f, float WorldUpy = 1.0f, float WorldUpz = 0.0f, float Pitch = PITCH, float Yaw = YAW);
-    
     // Generate a view matrex for the view uniform
     glm::mat4 GetViewMat();
 

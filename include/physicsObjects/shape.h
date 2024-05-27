@@ -6,8 +6,7 @@
 #include <vector>
 #include <map>
 #include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
-
+#include <glm/gtc/matrix_transform.hpp>
 class Shape{
 public:
     std::vector<float> vertices;
@@ -41,7 +40,7 @@ public:
 
 
     Box();
-    void UpdateShape(const glm::vec3& position ,const glm::mat3& orientation);
+    void UpdateShape(const glm::vec3& position, const glm::mat3& orientation);
 };
 
 class Plane : public Shape{

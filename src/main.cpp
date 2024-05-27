@@ -1,11 +1,11 @@
 #include <vector>
 #include <map>
 
-#include "setup/setup.h"
-#include "shaders/shaders.h"
-#include "camera/camera.h"
-#include "physicsObjects/physicsObjects.h"
-#include "collisions/collisionHandler.h"
+#include <setup/setup.h>
+#include <shaders/shaders.h>
+#include <camera/camera.h>
+#include <physicsObjects/physicsObjects.h>
+#include <collisions/collisionHandler.h>
 
 
 using namespace std; 
@@ -64,13 +64,41 @@ int main() {
 
     //-------------------------------------------------------------------------------------
 
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 5.0f, 0.0f), 1.0f, 0.9f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(5.0f, 5.0f, 5.0f), 1.0f, 0.9f));
 
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(5.0f, 3.0f, 0.0f), 1.0f, 0.9f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 11.0f, 0.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 9.0f, 0.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 7.0f, 0.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 5.0f, 0.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 3.0f, 0.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 1.0f, 0.0f), 1.0f, 0.7f));
 
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(-5.0f, 3.0f, 0.0f), 1.0f, 0.9f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 13.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 11.0f, 0.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 9.0f, 0.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 7.0f, 0.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 5.0f, 0.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 3.0f, 0.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 1.0f, 0.0f), 1.0f, 0.7f));
 
-    objects.push_back(PhysicsObject(make_unique<Box>(), glm::vec3(0.0f, 10.0f, 0.0f), 1.0f, 0.9f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 13.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 11.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 9.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 7.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 5.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 3.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 1.0f, 2.0f), 1.0f, 0.7f));
+
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 15.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 13.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 11.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 9.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 7.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 5.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 3.0f, 2.0f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 1.0f, 2.0f), 1.0f, 0.7f));
+
+
 
     objects.push_back(PhysicsObject(make_unique<Plane>(), glm::vec3(0.0f), 0.0f, 0.0f));
 
@@ -118,8 +146,9 @@ int main() {
         //-----------------------
         for (int i = 0; i < objects.size(); i++){
             glm::vec3 objPos = objects[i].rigidBody.GetPosition();
+            if (i!=0)
+                objects[i].rigidBody.AddForce(gravity * objects[i].rigidBody.GetMass());
 
-            objects[i].rigidBody.AddForce(gravity * objects[i].rigidBody.GetMass());
             objects[i].Update(deltaTime);
 
 
@@ -168,22 +197,9 @@ void ProcessUserInput(GLFWwindow* window){
         glfwSetWindowShouldClose(window, true);
     
     //----------------Adding forces------------------------
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
-        objects[2].rigidBody.AddForce(glm::vec3(0.0f, -3.0f, 0.0f));
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
+        objects[0].rigidBody.AddForce(glm::vec3(-100000.0f, 0.0f, -100000.0f));
     }
-
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
-        objects[2].rigidBody.AddForce(glm::vec3(0.0f, 3.0f, 0.0f));
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
-        objects[2].rigidBody.AddForce(glm::vec3(-3.0f, 0.0f, 0.0f));
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
-        objects[2].rigidBody.AddForce(glm::vec3(3.0f, 0.0f, 0.0f));
-    }
-    
 
     // Camera movements
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
