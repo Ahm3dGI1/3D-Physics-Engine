@@ -21,11 +21,12 @@
                 "${workspaceFolder}/src/rigidbody.cpp",
                 "${workspaceFolder}/src/shape.cpp",
                 "${workspaceFolder}/src/physicsObjects.cpp",
+                "${workspaceFolder}/src/spring.cpp",
                 "${workspaceFolder}/src/collisionHandler.cpp",
                 "${workspaceFolder}/src/glad.c",
                 "-lglfw3dll",
                 "-o",
-                "${workspaceFolder}/demos/Falling Balls.exe"
+                "${workspaceFolder}/demos/Spring.exe"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

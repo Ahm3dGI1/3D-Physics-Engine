@@ -2,9 +2,11 @@
 #include <map>
 
 #include <setup/setup.h>
+#include <setup/frameCounter.h>
 #include <shaders/shaders.h>
 #include <camera/camera.h>
 #include <physicsObjects/physicsObjects.h>
+#include <physicsObjects/spring.h>
 #include <collisions/collisionHandler.h>
 
 
@@ -16,10 +18,10 @@ float WINDOW_HEIGHT = 900;
 
 // Functions prototypes
 void ProcessUserInput(GLFWwindow* window);
-void MouseCallback(GLFWwindow * window, double xPosIn, double yPosIn);
+void MouseCallback(GLFWwindow* window, double xPosIn, double yPosIn);
 
 // Create a camera object
-Camera camera(glm::vec3(0.0f, 5.0f, 10.0f));
+Camera camera(glm::vec3(5.0f, 12.0f, 30.0f));
 bool firstMouse = true;
 float lastX = WINDOW_WIDTH / 2.0;
 float lastY = WINDOW_HEIGHT / 2.0;
@@ -33,6 +35,7 @@ float lastFrame = 0.0f;
 vector<PhysicsObject> objects;
 
 CollisionHandler collisionHandler;
+FrameCounter frameCounter;
 
 int main() {
 
@@ -63,47 +66,47 @@ int main() {
     Shader shader("../res/shaders/basic.vert", "../res/shaders/basic.frag"); // Path relative to the demo file
 
     //-------------------------------------------------------------------------------------
+    // Create the physics objects
 
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(5.0f, 5.0f, 5.0f), 1.0f, 0.9f));
+    // Basic spring
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(0.0f, 18.0f, 0.2f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(-1.0f, 10.0f, 0.2f), 1.0f, 0.7f));
 
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 11.0f, 0.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 9.0f, 0.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 7.0f, 0.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 5.0f, 0.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 3.0f, 0.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 1.0f, 0.0f), 1.0f, 0.7f));
+    // High stiffness and rest length spring
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(2.0f, 18.0f, 0.2f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(2.0f, 16.0f, 0.2f), 1.0f, 0.7f));
 
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 13.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 11.0f, 0.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 9.0f, 0.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 7.0f, 0.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 5.0f, 0.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 3.0f, 0.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 1.0f, 0.0f), 1.0f, 0.7f));
+    // Line of balls with equal stiffness
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(6.0f, 18.0f, 0.2f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(6.0f, 15.0f, 0.2f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(6.0f, 12.0f, 0.2f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(6.0f, 9.0f, 0.2f), 1.0f, 0.7f));
 
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 13.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 11.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 9.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 7.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 5.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 3.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(2.0f, 1.0f, 2.0f), 1.0f, 0.7f));
+    // Line of balls with different stiffness
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(10.0f, 18.0f, 0.2f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(10.0f, 15.0f, 0.2f), 1.0f, 0.7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(10.0f, 12.0f, 0.2f), 1.0f, 0.7f));
 
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 15.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 13.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 11.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 9.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 7.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 5.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 3.0f, 2.0f), 1.0f, 0.7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0f, 3), glm::vec3(0.0f, 1.0f, 2.0f), 1.0f, 0.7f));
-
-
-
+    // Static ground plane
     objects.push_back(PhysicsObject(make_unique<Plane>(), glm::vec3(0.0f), 0.0f, 0.0f));
 
     glm::vec3 gravity = glm::vec3(0.0f, -9.8f, 0.0f);
+
+    // Springs
+    Spring spring1(&objects[0], &objects[1], 2.0f, 1.0f);
+    Spring spring2(&objects[2], &objects[3], 4.0f, 10.0f);  // High rest length
+    Spring spring3(&objects[4], &objects[5], 2.0f, 1.0f);
+    Spring spring4(&objects[5], &objects[6], 2.0f, 1.0f);
+    Spring spring5(&objects[6], &objects[7], 2.0f, 1.0f);
+
+    Spring spring6(&objects[8], &objects[9], 2.0f, 1.0f);   // Line with different stiffness
+    Spring spring7(&objects[9], &objects[10], 3.0f, 1.0f);
+
+    objects[2].rigidBody.SetFixed(true);  // Fix one end of the high rest length spring
+    objects[4].rigidBody.SetFixed(true);  // Fix one end of the line of balls
+    objects[8].rigidBody.SetFixed(true);  // Fix one end of the line with different stiffness
     //-------------------------------------------------------------------------------------
+
 
 
     // Vertex Array Object, Vertex Buffer Object
@@ -137,20 +140,27 @@ int main() {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        frameCounter.Update();
 
         // Rendering commands here
         glClearColor(0.1f, 0.3f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            glBindVertexArray(VAO);
+         glBindVertexArray(VAO);
         //-----------------------
         for (int i = 0; i < objects.size(); i++){
             glm::vec3 objPos = objects[i].rigidBody.GetPosition();
-            if (i!=0)
-                objects[i].rigidBody.AddForce(gravity * objects[i].rigidBody.GetMass());
 
+            objects[i].rigidBody.AddForce(gravity * objects[i].rigidBody.GetMass());
             objects[i].Update(deltaTime);
 
+            spring1.ApplySpringForce();
+            spring2.ApplySpringForce();
+            spring3.ApplySpringForce();
+            spring4.ApplySpringForce();
+            spring5.ApplySpringForce();
+            spring6.ApplySpringForce();
+            spring7.ApplySpringForce();
 
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, objPos);
@@ -165,7 +175,7 @@ int main() {
         for (int i = 0; i < objects.size(); i++){
             for (int j = i + 1; j < objects.size(); j++){
                 if (collisionHandler.CheckCollision(objects[i], objects[j])){
-                    collisionHandler.ResolveCollision(objects[i], objects[j]);
+                    collisionHandler.HandleCollision(objects[i], objects[j]);
                 }
             }
         }        
@@ -196,9 +206,10 @@ void ProcessUserInput(GLFWwindow* window){
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     
-    //----------------Adding forces------------------------
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        objects[0].rigidBody.AddForce(glm::vec3(-1000.0f, 0.0f, -1000.0f));
+    //----------------Adding balls------------------------
+    while (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
+        objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(0.0f, 10.0f, 0.0f), 5.0f, .7f));
+        break;
     }
 
     // Camera movements

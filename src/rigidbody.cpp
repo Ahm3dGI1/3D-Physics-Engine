@@ -13,6 +13,7 @@ if (mass == 0.0f) inverseMass = 0.0f;
     angularAcceleration = glm::vec3(0.0f, 0.0f, 0.0f);
     torqueAccum = glm::vec3(0.0f, 0.0f, 0.0f);
     inverseInertiaTensor = glm::mat3(1.0f);
+    isFixed = false;
 }
 
 // Setters and Getters
@@ -102,6 +103,14 @@ float Rigidbody::GetRestitution() {
     return restitution;
 }
 
+void Rigidbody::SetFixed(bool fixed) {
+    isFixed = fixed;
+}
+
+bool Rigidbody::GetFixed() {
+    return isFixed;
+}
+
 // Add a force to the object
 void Rigidbody::AddForce(glm::vec3 force) {
     forceAccum += force;
@@ -122,30 +131,32 @@ void Rigidbody::ClearTorqueAccumulator() {
 
 // Update the object's position and velocity
 void Rigidbody::Update(float deltaTime) {
-    // Update the acceleration
-    acceleration = forceAccum * inverseMass;
+    if (!isFixed){
+        // Update the acceleration
+        acceleration = forceAccum * inverseMass;
 
-    angularAcceleration = inverseInertiaTensor * torqueAccum;
+        angularAcceleration = inverseInertiaTensor * torqueAccum;
 
-    // Update the velocity
-    velocity += acceleration * deltaTime;
+        // Update the velocity
+        velocity += acceleration * deltaTime;
 
-    angularVelocity += angularAcceleration * deltaTime;
+        angularVelocity += angularAcceleration * deltaTime;
 
-    // Apply damping
-    velocity *= pow(damping, deltaTime);
+        // Apply damping
+        velocity *= pow(damping, deltaTime);
 
-    angularVelocity *= pow(damping, deltaTime);
+        angularVelocity *= pow(damping, deltaTime);
 
-    // Update the position
-    position += velocity * deltaTime;
+        // Update the position
+        position += velocity * deltaTime;
 
-    // Update the orientation
-    //UpdateOrientation(deltaTime);
+        // Update the orientation
+        //UpdateOrientation(deltaTime);
 
-    // Clear the forces applied to the object
-    ClearForceAccumulator();
-    ClearTorqueAccumulator();
+        // Clear the forces applied to the object
+        ClearForceAccumulator();
+        ClearTorqueAccumulator();
+    }
 }
 
 void Rigidbody::UpdateOrientation(float deltaTime) {

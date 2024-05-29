@@ -25,6 +25,8 @@ protected:
     float damping;
     float restitution;
 
+    bool isFixed;
+
 public:
     Rigidbody(glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f), float m = 1.0f, float damp = 0.9f);
 
@@ -60,6 +62,9 @@ public:
 
     void SetRestitution(float rest);
     float GetRestitution();
+
+    void SetFixed(bool fixed);
+    bool GetFixed();
 
     // Add a force to the object
     void AddForce(glm::vec3 force);
