@@ -16,7 +16,7 @@ GLFWwindow* GLFWSetup(int V_MAJOR, int V_MINOR,float WINDOW_WIDTH, float WINDOW_
     #endif
 
     // Create a window
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Falling Balls", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Ico Spheres", NULL, NULL);
 
     // Check if the window was created successfully
     if(!window) return NULL;

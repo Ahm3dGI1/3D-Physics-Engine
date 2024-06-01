@@ -3,8 +3,8 @@
 
 #include <memory>
 
-#include "shape.h"
-#include "rigidbody.h"
+#include "physicsObjects/shape.h"
+#include "physicsObjects/rigidbody.h"
 
 class PhysicsObject{
 public:

@@ -22,11 +22,12 @@
                 "${workspaceFolder}/src/shape.cpp",
                 "${workspaceFolder}/src/physicsObjects.cpp",
                 "${workspaceFolder}/src/spring.cpp",
+                "${workspaceFolder}/src/cloth.cpp",
                 "${workspaceFolder}/src/collisionHandler.cpp",
                 "${workspaceFolder}/src/glad.c",
                 "-lglfw3dll",
                 "-o",
-                "${workspaceFolder}/demos/Spring.exe"
+                "${workspaceFolder}/demos/Ico Spheres.exe"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

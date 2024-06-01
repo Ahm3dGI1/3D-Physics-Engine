@@ -4,6 +4,7 @@ Rigidbody::Rigidbody(glm::vec3 pos, float m, float damp)
     : position(pos), mass(m), damping(damp){
 if (mass == 0.0f) inverseMass = 0.0f;
     else inverseMass = 1.0f / mass;
+    previousPosition = position;
     velocity = glm::vec3(0.0f, 0.0f, 0.0f);
     acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
     forceAccum = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -135,27 +136,17 @@ void Rigidbody::Update(float deltaTime) {
         // Update the acceleration
         acceleration = forceAccum * inverseMass;
 
-        angularAcceleration = inverseInertiaTensor * torqueAccum;
-
         // Update the velocity
         velocity += acceleration * deltaTime;
-
-        angularVelocity += angularAcceleration * deltaTime;
 
         // Apply damping
         velocity *= pow(damping, deltaTime);
 
-        angularVelocity *= pow(damping, deltaTime);
-
         // Update the position
         position += velocity * deltaTime;
 
-        // Update the orientation
-        //UpdateOrientation(deltaTime);
-
         // Clear the forces applied to the object
         ClearForceAccumulator();
-        ClearTorqueAccumulator();
     }
 }
 
