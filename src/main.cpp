@@ -22,7 +22,7 @@ void ProcessUserInput(GLFWwindow* window);
 void MouseCallback(GLFWwindow* window, double xPosIn, double yPosIn);
 
 // Create a camera object
-Camera camera(glm::vec3(22.0f, -15.0f, 85.0f));
+Camera camera(glm::vec3(0.0f, 10.0f, 30.0f));
 bool firstMouse = true;
 float lastX = WINDOW_WIDTH / 2.0;
 float lastY = WINDOW_HEIGHT / 2.0;
@@ -69,12 +69,13 @@ int main() {
     //-------------------------------------------------------------------------------------
     // Create the physics objects
 
-    Cloth cloth(10, 10, 5.0f, 1.5f, 1.0f, glm::vec3(0.0f, 10.0f, 0.0f));
 
-    cloth.particles[0].rigidBody.SetFixed(true);
-    cloth.particles[9].rigidBody.SetFixed(true);
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(-10.0f, 10.0f, 0.0f), 5.0f, .7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 2), glm::vec3(-5.0f, 10.0f, 0.0f), 5.0f, .7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 1), glm::vec3(0.0f, 10.0f, 0.0f), 5.0f, .7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 0), glm::vec3(5.0f, 10.0f, 0.0f), 5.0f, .7f));
 
-    glm::vec3 gravity = glm::vec3(0.0f, -2.8f, 0.0f);
+    glm::vec3 gravity = glm::vec3(0.0f, -9.8f, 0.0f);
     //-------------------------------------------------------------------------------------
 
 
@@ -118,29 +119,26 @@ int main() {
 
          glBindVertexArray(VAO);
         //-----------------------
-        for (int i = 0; i < cloth.particles.size(); i++){
-            glm::vec3 objPos = cloth.particles[i].rigidBody.GetPosition();
+        for (int i = 0; i < objects.size(); i++){
+            glm::vec3 objPos = objects[i].rigidBody.GetPosition();
 
-            cloth.particles[i].rigidBody.AddForce(gravity * cloth.particles[i].rigidBody.GetMass());
+            //objects[i].rigidBody.AddForce(gravity * objects[i].rigidBody.GetMass());
+            objects[i].Update(deltaTime);
     
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, objPos);
             shader.SetMat4("model", model);
 
-            glBufferData(GL_ARRAY_BUFFER, cloth.particles[i].shape->shapeSize, cloth.particles[i].shape->vertices.data(), GL_STATIC_DRAW);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, cloth.particles[i].shape->indices.size() * sizeof(unsigned int), cloth.particles[i].shape->indices.data(), GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, objects[i].shape->shapeSize, objects[i].shape->vertices.data(), GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, objects[i].shape->indices.size() * sizeof(unsigned int), objects[i].shape->indices.data(), GL_STATIC_DRAW);
                 // Draw the plane
-            glDrawElements(GL_TRIANGLES, cloth.particles[i].shape->numVertices, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, objects[i].shape->numVertices, GL_UNSIGNED_INT, 0);
         }
 
-        cout << camera.pos.x << " " << camera.pos.y << " " << camera.pos.z << endl;
-
-        cloth.Update(deltaTime);
-
-        for (int i = 0; i < cloth.particles.size(); i++){
-            for (int j = i + 1; j < cloth.particles.size(); j++){
-                if (collisionHandler.CheckCollision(cloth.particles[i], cloth.particles[j])){
-                    collisionHandler.HandleCollision(cloth.particles[i], cloth.particles[j]);
+        for (int i = 0; i < objects.size(); i++){
+            for (int j = i + 1; j < objects.size(); j++){
+                if (collisionHandler.CheckCollision(objects[i], objects[j])){
+                    collisionHandler.HandleCollision(objects[i], objects[j]);
                 }
             }
         }        
