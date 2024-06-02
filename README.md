@@ -1,5 +1,4 @@
 # 3D Physics Engine
-
 ## Overview
 
 This project is a 3D physics engine that simulates 3D physics using rigid bodies and integrates a simple cloth simulation. The engine is built using C++ and OpenGL, and it showcases various physics concepts such as spring forces, rigid body dynamics, and collision detection.
@@ -14,8 +13,6 @@ This project is a 3D physics engine that simulates 3D physics using rigid bodies
 - **Custom Math Library:** Includes custom implementations of matrix and vector operations.
 - **Extensible Framework:** Modular design that allows for easy extension and customization.
 - **Rendering: Real-time** rendering using OpenGL.
-
-## Demos
 
 ## Getting Started
 ### Prerequisites
@@ -56,16 +53,12 @@ Cloth cloth(10, 10, 3.0f, 1.0f, 1.0f, Vec3(0.0f, 0.0f, 0.0f));
 Spring spring(object[0], object[1], 2.0f, 1.0f)
 ```
 
-- To modify inputs you can change the ```void ProcessUserInput(GLFWwindow* window)```
+- To modify inputs you can change the ```void ProcessUserInput(GLFWwindow* window)``` at the end of the main.cpp file.
 
 - The math library includes custom implementations of common mathematical operations and data structures, such as vectors and matrices.
 
-
 ## Contributing
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
-
-## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
 
 ## Contact
 For any questions or inquiries, please contact me at ahmedgouda797@gmail.com.
