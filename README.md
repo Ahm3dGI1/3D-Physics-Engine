@@ -16,7 +16,7 @@ This project is a 3D physics engine that simulates 3D physics using rigid bodies
 
 ## Demos
 - Springs
-https://github.com/Ahm3dGI1/3D-Physics-Engine/assets/85696822/cec41150-6f0c-4688-9353-923f2963c3f1
+<video src="https://github.com/Ahm3dGI1/3D-Physics-Engine/assets/85696822/cec41150-6f0c-4688-9353-923f2963c3f1" />
 - Cloth Simulation
 https://github.com/Ahm3dGI1/3D-Physics-Engine/assets/85696822/cf448ac5-c26b-432b-bb25-da0dd2783a27
 - Rigid body physics
