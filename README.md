@@ -41,7 +41,7 @@ I'm working on adding a GUI that allows for a sandbox mode so that the user can 
 
 - To add new physics objects, use the PhysicsObject class and specify the shape, position, mass, and restitution coefficient. For example:
 
-```
+```cpp
                                     // Box Shape        // position      // Mass and damping
 objects.push_back(PhysicsObject(make_unique<Box>(), Vec3(0.0f, 10.0f, 0.0f), 5.0f, .7f));
                 // Sphere of radius 1 and 3 subdivisions        // Position    // Mass and Damping
@@ -49,8 +49,10 @@ objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), Vec3(5.0f, 10.0f, 0
 ```
 
 - Or you can add cloth or spring objects using:
-```
+```cpp
+        // Length, width, spacing, flexibility, mass, position
 Cloth cloth(10, 10, 3.0f, 1.0f, 1.0f, Vec3(0.0f, 0.0f, 0.0f));
+        // Node1, Node2, Rest Length, Stiffness
 Spring spring(object[0], object[1], 2.0f, 1.0f)
 ```
 
