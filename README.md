@@ -15,10 +15,10 @@ This project is a 3D physics engine that simulates 3D physics using rigid bodies
 - **Rendering: Real-time** rendering using OpenGL.
 
 ## Demos
-- Springs <video controls src="Spring.mp4" title="Springs">
-- Cloth Simulation </video> <video controls src="cloth.mp4" title="Cloth">
-- Rigid body physics </video> <video controls src="Fall.mp4" title="Fall">
-- Ico Spheres with different subdivision levels </video> <video controls src="Ico Sphere.mp4" title="Ico Sphere"></video>
+- Springs
+- Cloth Simulation
+- Rigid body physics
+- Ico Spheres with different subdivision levels
 
 ## Getting Started
 ### Prerequisites
