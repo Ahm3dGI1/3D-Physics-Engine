@@ -56,7 +56,7 @@ Cloth cloth(10, 10, 3.0f, 1.0f, 1.0f, Vec3(0.0f, 0.0f, 0.0f));
 Spring spring(object[0], object[1], 2.0f, 1.0f)
 ```
 
-- To modify inputs 
+- To modify inputs you can change the ```void ProcessUserInput(GLFWwindow* window)```
 
 - The math library includes custom implementations of common mathematical operations and data structures, such as vectors and matrices.
 
