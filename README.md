@@ -16,13 +16,13 @@ This project is a 3D physics engine that simulates 3D physics using rigid bodies
 
 ## Demos
 - Springs
-<video src="https://github.com/Ahm3dGI1/3D-Physics-Engine/assets/85696822/cec41150-6f0c-4688-9353-923f2963c3f1" width="300" />
+<video src="https://github.com/Ahm3dGI1/3D-Physics-Engine/assets/85696822/cec41150-6f0c-4688-9353-923f2963c3f1" width="300"></video>
 - Cloth Simulation
-<video src="https://github.com/Ahm3dGI1/3D-Physics-Engine/assets/85696822/cf448ac5-c26b-432b-bb25-da0dd2783a27" width="300" />
+<video src="https://github.com/Ahm3dGI1/3D-Physics-Engine/assets/85696822/cf448ac5-c26b-432b-bb25-da0dd2783a27" width="300"></video>
 - Rigid body physics
-<video src="https://github.com/Ahm3dGI1/3D-Physics-Engine/assets/85696822/bf573b02-3184-4848-bcea-13aa0665dd25" width="300" />
+<video src="https://github.com/Ahm3dGI1/3D-Physics-Engine/assets/85696822/bf573b02-3184-4848-bcea-13aa0665dd25" width="300"></video>
 - Ico Spheres with different subdivision levels
-<video src="https://github.com/Ahm3dGI1/3D-Physics-Engine/assets/85696822/53ccef04-9d74-4025-84a9-13696e7f1775" width="300" />
+<video src="https://github.com/Ahm3dGI1/3D-Physics-Engine/assets/85696822/53ccef04-9d74-4025-84a9-13696e7f1775" width="300"></video>
 
 
 ## Getting Started
