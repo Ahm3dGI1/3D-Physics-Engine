@@ -41,12 +41,16 @@ I'm working on adding a GUI that allows for a sandbox mode so that the user can 
 
 - To add new physics objects, use the PhysicsObject class and specify the shape, position, mass, and restitution coefficient. For example:
 
-'''objects.push_back(PhysicsObject(make_unique<Box>(1.0, 1.0, 1.0), Vec3(0.0f, 10.0f, 0.0f), 5.0f, .7f));
-objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 0), Vec3(5.0f, 10.0f, 0.0f), 5.0f, .7f));'''
+```
+objects.push_back(PhysicsObject(make_unique<Box>(1.0, 1.0, 1.0), Vec3(0.0f, 10.0f, 0.0f), 5.0f, .7f));
+objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 0), Vec3(5.0f, 10.0f, 0.0f), 5.0f, .7f));
+```
 
 - Or you can add cloth or spring objects using:
-''' Cloth cloth(10, 10, 3.0f, 1.0f, 1.0f, Vec3(0.0f, 0.0f, 0.0f));
-Spring spring(object[0], object[1], 2.0f, 1.0f)'''
+```
+Cloth cloth(10, 10, 3.0f, 1.0f, 1.0f, Vec3(0.0f, 0.0f, 0.0f));
+Spring spring(object[0], object[1], 2.0f, 1.0f)
+```
 
 - To modify inputs 
 
