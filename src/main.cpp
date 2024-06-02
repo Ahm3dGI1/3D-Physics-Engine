@@ -1,15 +1,4 @@
-#include <vector>
-#include <iostream>
-
 #include <setup/setup.h>
-#include <setup/frameCounter.h>
-#include <shaders/shaders.h>
-#include <camera/camera.h>
-#include <physicsObjects/physicsObjects.h>
-#include <physicsObjects/spring.h>
-#include <physicsObjects/cloth.h>
-#include <collisions/collisionHandler.h>
-
 
 using namespace std; 
 
@@ -22,7 +11,7 @@ void ProcessUserInput(GLFWwindow* window);
 void MouseCallback(GLFWwindow* window, double xPosIn, double yPosIn);
 
 // Create a camera object
-Camera camera(glm::vec3(0.0f, 10.0f, 30.0f));
+Camera camera(Vec3(-2.5f, 10.0f, 30.0f));
 bool firstMouse = true;
 float lastX = WINDOW_WIDTH / 2.0;
 float lastY = WINDOW_HEIGHT / 2.0;
@@ -70,12 +59,15 @@ int main() {
     // Create the physics objects
 
 
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(-10.0f, 10.0f, 0.0f), 5.0f, .7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 2), glm::vec3(-5.0f, 10.0f, 0.0f), 5.0f, .7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 1), glm::vec3(0.0f, 10.0f, 0.0f), 5.0f, .7f));
-    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 0), glm::vec3(5.0f, 10.0f, 0.0f), 5.0f, .7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), Vec3(-10.0f, 10.0f, 0.0f), 5.0f, .7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 2), Vec3(-9.0f, 5.0f, 0.0f), 5.0f, .7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 1), Vec3(0.0f, 10.0f, 0.0f), 5.0f, .7f));
+    objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 0), Vec3(5.0f, 10.0f, 0.0f), 5.0f, .7f));
 
-    glm::vec3 gravity = glm::vec3(0.0f, -9.8f, 0.0f);
+
+    objects.push_back(PhysicsObject(make_unique<Plane>(), Vec3(0.0f, 0.0f, 0.0f), 0.0f, .7f));
+
+    Vec3 gravity = Vec3(0.0f, -9.8f, 0.0f);
     //-------------------------------------------------------------------------------------
 
 
@@ -120,13 +112,13 @@ int main() {
          glBindVertexArray(VAO);
         //-----------------------
         for (int i = 0; i < objects.size(); i++){
-            glm::vec3 objPos = objects[i].rigidBody.GetPosition();
+            Vec3 objPos = objects[i].rigidBody.GetPosition();
 
-            //objects[i].rigidBody.AddForce(gravity * objects[i].rigidBody.GetMass());
+            objects[i].rigidBody.AddForce(gravity * objects[i].rigidBody.GetMass());   
             objects[i].Update(deltaTime);
     
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, objPos);
+            Mat4 model = Mat4(1.0f);
+            model = Math::Translate(model, objPos);
             shader.SetMat4("model", model);
 
             glBufferData(GL_ARRAY_BUFFER, objects[i].shape->shapeSize, objects[i].shape->vertices.data(), GL_STATIC_DRAW);
@@ -146,11 +138,11 @@ int main() {
 
             // View Uniforms
         
-        glm::mat4 view = camera.GetViewMat();
+        Mat4 view = camera.GetViewMat();
         shader.SetMat4("view", view);
 
-        glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(45.0f), WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.0f); 
+        Mat4 projection = Mat4(1.0f);
+        projection = Math::Perspective(Math::ToRadians(45.0f), WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.0f); 
         shader.SetMat4("projection", projection);
 
         // Swap the front and back buffers and poll for IO events
@@ -171,7 +163,7 @@ void ProcessUserInput(GLFWwindow* window){
     
     //----------------Adding balls------------------------
     while (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), glm::vec3(0.0f, 10.0f, 0.0f), 5.0f, .7f));
+        objects.push_back(PhysicsObject(make_unique<Sphere>(1.0, 3), Vec3(0.0f, 10.0f, 0.0f), 5.0f, .7f));
         break;
     }
 

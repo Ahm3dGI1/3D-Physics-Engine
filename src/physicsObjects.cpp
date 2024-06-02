@@ -1,6 +1,6 @@
 #include "physicsObjects/physicsObjects.h"
 
-PhysicsObject::PhysicsObject(std::unique_ptr<Shape> s, glm::vec3 pos, float m, float damp)
+PhysicsObject::PhysicsObject(std::unique_ptr<Shape> s, Vec3 pos, float m, float damp)
         : shape(std::move(s)), rigidBody(pos, m, damp){}
 
 Shape* PhysicsObject::GetShape() const{
@@ -18,8 +18,8 @@ void PhysicsObject::Update(float deltaTime){
         
         box->UpdateShape(rigidBody.GetPosition(), rigidBody.GetOrientation());
 
-        box->maxCorner = box->center + glm::vec3(1.0f);
-        box->minCorner = box->center - glm::vec3(1.0f);
+        box->maxCorner = box->center + Vec3(1.0f);
+        box->minCorner = box->center - Vec3(1.0f);
 
     }
 

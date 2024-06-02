@@ -10,14 +10,14 @@ float YAW = -90.0f;
 float PITCH = 0.0f;
 
 // Constructor with vectors
-Camera::Camera(glm::vec3 Pos, glm::vec3 WorldUp, float Pitch, float Yaw)
-: pos(Pos), worldUp(WorldUp), front(glm::vec3(0.0f, 0.0f, -1.0f)), pitch(Pitch), yaw(Yaw), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY) {
+Camera::Camera(Vec3 Pos, Vec3 WorldUp, float Pitch, float Yaw)
+: pos(Pos), worldUp(WorldUp), front(Vec3(0.0f, 0.0f, -1.0f)), pitch(Pitch), yaw(Yaw), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY) {
     UpdateCameraVectors();
 }
 
 // Generate a view matrex for the view uniform
-glm::mat4 Camera::GetViewMat(){
-    return glm::lookAt(pos, pos + front, up);
+Mat4 Camera::GetViewMat(){
+    return Math::LookAt(pos, pos + front, up);
 }
 
 // Take Inputs
@@ -57,13 +57,13 @@ void Camera::MouseInputs(float xOffset, float yOffset, GLboolean constrainPitch)
 // Quickly updating all of the camera vectors
 void Camera::UpdateCameraVectors(){
     // Creating new front vector and use it to update the main one
-    glm::vec3 Front;
-    Front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    Front.y = sin(glm::radians(pitch));
-    Front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front = glm::normalize(Front);
+    Vec3 Front;
+    Front.x = cos(Math::ToRadians(yaw)) * cos(Math::ToRadians(pitch));
+    Front.y = sin(Math::ToRadians(pitch));
+    Front.z = sin(Math::ToRadians(yaw)) * cos(Math::ToRadians(pitch));
+    front = Math::Normalize(Front);
 
     // Calculate the right vector of the camera and use it to calculate the up
-    right = glm::normalize(glm::cross(front, worldUp));
-    up = glm::normalize(glm::cross(right, front));
+    right = Math::Normalize(Math::Cross(front, worldUp));
+    up = Math::Normalize(Math::Cross(right, front));
 }

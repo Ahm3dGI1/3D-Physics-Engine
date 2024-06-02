@@ -1,24 +1,22 @@
 #ifndef RIGIDBODY_H
 #define RIGIDBODY_H
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
+#include <math/math.h>
 
 class Rigidbody
 {
 protected:
-    glm::vec3 position;
-    glm::vec3 previousPosition;
-    glm::vec3 velocity;
-    glm::vec3 acceleration;
-    glm::vec3 forceAccum;
+    Vec3 position;
+    Vec3 previousPosition;
+    Vec3 velocity;
+    Vec3 acceleration;
+    Vec3 forceAccum;
 
-    glm::vec3 torqueAccum;
-    glm::vec3 angularVelocity;
-    glm::vec3 angularAcceleration;
-    glm::mat3 orientation;
-    glm::mat3 inverseInertiaTensor;
+    Vec3 torqueAccum;
+    Vec3 angularVelocity;
+    Vec3 angularAcceleration;
+    Mat3 orientation;
+    Mat3 inverseInertiaTensor;
 
     float mass;
     float inverseMass;
@@ -29,29 +27,29 @@ protected:
     bool isFixed;
 
 public:
-    Rigidbody(glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f), float m = 1.0f, float damp = 0.9f);
+    Rigidbody(Vec3 pos = Vec3(0.0f, 0.0f, 0.0f), float m = 1.0f, float damp = 0.9f);
 
     // Setters and Getters
-    void SetPosition(glm::vec3 pos);
-    glm::vec3 GetPosition();
+    void SetPosition(Vec3 pos);
+    Vec3 GetPosition();
 
-    void SetVelocity(glm::vec3 vel);
-    glm::vec3 GetVelocity();
+    void SetVelocity(Vec3 vel);
+    Vec3 GetVelocity();
 
-    void SetAcceleration(glm::vec3 acc);
-    glm::vec3 GetAcceleration();
+    void SetAcceleration(Vec3 acc);
+    Vec3 GetAcceleration();
 
-    void SetOrientation(glm::mat3 orient);
-    glm::mat3 GetOrientation();
+    void SetOrientation(Mat3 orient);
+    Mat3 GetOrientation();
 
-    void SetAngularVelocity(glm::vec3 angVel);
-    glm::vec3 GetAngularVelocity();
+    void SetAngularVelocity(Vec3 angVel);
+    Vec3 GetAngularVelocity();
 
-    void SetAngularAcceleration(glm::vec3 angAcc);
-    glm::vec3 GetAngularAcceleration();
+    void SetAngularAcceleration(Vec3 angAcc);
+    Vec3 GetAngularAcceleration();
 
-    void SetInverseInertiaTensor(glm::mat3 invInertia);
-    glm::mat3 GetInverseInertiaTensor();
+    void SetInverseInertiaTensor(Mat3 invInertia);
+    Mat3 GetInverseInertiaTensor();
 
 
     void SetMass(float m);
@@ -68,8 +66,8 @@ public:
     bool GetFixed();
 
     // Add a force to the object
-    void AddForce(glm::vec3 force);
-    void AddTorque(glm::vec3 torque);
+    void AddForce(Vec3 force);
+    void AddTorque(Vec3 torque);
 
     // Clear the forces applied to the object
     void ClearForceAccumulator();

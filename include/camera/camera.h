@@ -2,8 +2,7 @@
 #define CAMERA_H
 
 #include <glad/glad.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include <math/math.h>
 
 enum CAMERA_MOV_KEYS {
     FORWARD,
@@ -24,11 +23,11 @@ extern float PITCH;
 class Camera {
 public:
     // Camera
-    glm::vec3 pos;
-    glm::vec3 front;
-    glm::vec3 up;
-    glm::vec3 right;
-    glm::vec3 worldUp;
+    Vec3 pos;
+    Vec3 front;
+    Vec3 up;
+    Vec3 right;
+    Vec3 worldUp;
 
     // Euler angles
     float yaw;
@@ -39,10 +38,10 @@ public:
     float mouseSensitivity;
 
     // Constructor w vectors
-    Camera(glm::vec3 Pos = glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3 WorldUp = glm::vec3(0.0f, 1.0f, 0.0f), float Pitch = PITCH, float Yaw = YAW);
+    Camera(Vec3 Pos = Vec3(0.0f, 0.0f, 3.0f), Vec3 WorldUp = Vec3(0.0f, 1.0f, 0.0f), float Pitch = PITCH, float Yaw = YAW);
 
     // Generate a view matrex for the view uniform
-    glm::mat4 GetViewMat();
+    Mat4 GetViewMat();
 
     // Take Inputs
     void KeyboardInputs(CAMERA_MOV_KEYS key, float deltaTime);

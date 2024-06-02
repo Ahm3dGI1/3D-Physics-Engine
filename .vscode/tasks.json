@@ -27,7 +27,7 @@
                 "${workspaceFolder}/src/glad.c",
                 "-lglfw3dll",
                 "-o",
-                "${workspaceFolder}/demos/Ico Spheres.exe"
+                "${workspaceFolder}/demos/Test.exe"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

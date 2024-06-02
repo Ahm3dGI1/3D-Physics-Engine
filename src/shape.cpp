@@ -32,8 +32,8 @@ Sphere::Sphere(float r, float d) : radius(r), X(.525731112119133606f), Z(.850650
 
     // Scale initial vertices to the correct radius
     for (size_t i = 0; i < vertices.size(); i += 6) {
-        glm::vec3 v(vertices[i], vertices[i + 1], vertices[i + 2]);
-        v = glm::normalize(v) * r;
+        Vec3 v(vertices[i], vertices[i + 1], vertices[i + 2]);
+        v = Math::Normalize(v) * r;
         vertices[i] = v.x;
         vertices[i + 1] = v.y;
         vertices[i + 2] = v.z;
@@ -58,9 +58,9 @@ void Sphere::Subdivide(std::vector<float>& vertices, std::vector<unsigned int>& 
         // Calculate midpoint
         int idx1 = i1 * 6; // Start index of vertex coordinates
         int idx2 = i2 * 6;
-        glm::vec3 p1(vertices[idx1], vertices[idx1 + 1], vertices[idx1 + 2]);
-        glm::vec3 p2(vertices[idx2], vertices[idx2 + 1], vertices[idx2 + 2]);
-        glm::vec3 midpoint = glm::normalize(p1 + p2) * radius;
+        Vec3 p1(vertices[idx1], vertices[idx1 + 1], vertices[idx1 + 2]);
+        Vec3 p2(vertices[idx2], vertices[idx2 + 1], vertices[idx2 + 2]);
+        Vec3 midpoint = Math::Normalize(p1 + p2) * radius;
 
         // Add new vertex in the array
         int newIdx = vertices.size() / 6;
@@ -100,7 +100,7 @@ void Sphere::Subdivide(std::vector<float>& vertices, std::vector<unsigned int>& 
     }
 }
 
-Box::Box() : minCorner(glm::vec3(-1.0f)), maxCorner(glm::vec3(1.0f)){
+Box::Box() : minCorner(Vec3(-1.0f)), maxCorner(Vec3(1.0f)){
     originalVertices = {
         // Positions           // Colors
         -1.0f, -1.0f, -1.0f,  1.0f, 0.0f, 0.0f,  // 0
@@ -134,15 +134,15 @@ Box::Box() : minCorner(glm::vec3(-1.0f)), maxCorner(glm::vec3(1.0f)){
     shapeSize = vertices.size() * sizeof(float);
 }
 
-void Box::UpdateShape(const glm::vec3& position, const glm::mat3& orientation) {
+void Box::UpdateShape(const Vec3& position, const Mat3& orientation) {
     // Update the shape's position
     center = position;
 
     /*
     // Update the shape's verticies
     for (size_t i = 0; i < originalVertices.size(); i += 6) {
-        glm::vec3 originalPos(originalVertices[i], originalVertices[i + 1], originalVertices[i + 2]);
-        glm::vec3 transformedPos = orientation * originalPos;
+        Vec3 originalPos(originalVertices[i], originalVertices[i + 1], originalVertices[i + 2]);
+        Vec3 transformedPos = orientation * originalPos;
 
         vertices[i] = transformedPos.x;
         vertices[i + 1] = transformedPos.y;
@@ -156,7 +156,7 @@ void Box::UpdateShape(const glm::vec3& position, const glm::mat3& orientation) {
     */
 }
 
-Plane::Plane() : normal(glm::vec3(0.0f, 1.0f, 0.0f)){
+Plane::Plane() : normal(Vec3(0.0f, 1.0f, 0.0f)){
     vertices = {
     // Positions                // Colors
      100.0f, 0.0f,  100.0f,    .4f, .4f, .4f, // 0

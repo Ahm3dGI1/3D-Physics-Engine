@@ -142,7 +142,7 @@ Mat4 Math::Transpose(const Mat4& a){
     Mat4 result;
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            result.m[i][j] = a.m[j][i];
+            result[i][j] = a[j][i];
         }
     }
     return result;
@@ -185,9 +185,10 @@ Mat4 Math::Inverse(const Mat4& a){
 
 // Translate, rotate, scale
 Mat4 Math::Translate(Mat4 m, const Vec3& translation){
-    m[3][0] += translation.x;
-    m[3][1] += translation.y;
-    m[3][2] += translation.z;
+    m[3][0] = m[0][0] * translation.x + m[1][0] * translation.y + m[2][0] * translation.z + m[3][0];
+    m[3][1] = m[0][1] * translation.x + m[1][1] * translation.y + m[2][1] * translation.z + m[3][1];
+    m[3][2] = m[0][2] * translation.x + m[1][2] * translation.y + m[2][2] * translation.z + m[3][2];
+    m[3][3] = m[0][3] * translation.x + m[1][3] * translation.y + m[2][3] * translation.z + m[3][3];
     return m;
 }
 
@@ -269,13 +270,13 @@ Mat4 Math::LookAt(const Vec3& eye, const Vec3& center, const Vec3& up){
 
     Mat4 result;
     result[0][0] = r.x;
-    result[0][1] = r.y;
-    result[0][2] = r.z;
-    result[1][0] = u.x;
+    result[1][0] = r.y;
+    result[2][0] = r.z;
+    result[0][1] = u.x;
     result[1][1] = u.y;
-    result[1][2] = u.z;
-    result[2][0] = -f.x;
-    result[2][1] = -f.y;
+    result[2][1] = u.z;
+    result[0][2] = -f.x;
+    result[1][2] = -f.y;
     result[2][2] = -f.z;
     result[3][0] = -Dot(r, eye);
     result[3][1] = -Dot(u, eye);
@@ -285,18 +286,13 @@ Mat4 Math::LookAt(const Vec3& eye, const Vec3& center, const Vec3& up){
 }
 
 Mat4 Math::Perspective(float fov, float aspect, float near, float far){
-    Mat4 result;
-    float q = 1.0f / tan(ToRadians(0.5f * fov));
-    float a = q / aspect;
-    float b = (near + far) / (near - far);
-    float c = (2.0f * near * far) / (near - far);
-
-    result[0][0] = a;
-    result[1][1] = q;
-    result[2][2] = b;
-    result[2][3] = -1.0f;
-    result[3][2] = c;
-
+    const float tanHalfFovy = tan(fov / 2);
+    Mat4 result(0);
+    result[0][0] = 1 / (aspect * tanHalfFovy);
+    result[1][1] = 1 / (tanHalfFovy);
+    result[2][3] = - 1;
+    result[2][2] = - (far + near) / (far - near);
+    result[3][2] = - (2 * far * near) / (far - near);
     return result;
 }
 

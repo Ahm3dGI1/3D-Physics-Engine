@@ -1,76 +1,76 @@
 #include "physicsObjects/rigidbody.h"
 
-Rigidbody::Rigidbody(glm::vec3 pos, float m, float damp)
+Rigidbody::Rigidbody(Vec3 pos, float m, float damp)
     : position(pos), mass(m), damping(damp){
 if (mass == 0.0f) inverseMass = 0.0f;
     else inverseMass = 1.0f / mass;
     previousPosition = position;
-    velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-    acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
-    forceAccum = glm::vec3(0.0f, 0.0f, 0.0f);
+    velocity = Vec3(0.0f, 0.0f, 0.0f);
+    acceleration = Vec3(0.0f, 0.0f, 0.0f);
+    forceAccum = Vec3(0.0f, 0.0f, 0.0f);
     restitution = 0.7f;
-    orientation = glm::mat3(1.0f);
-    angularVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
-    angularAcceleration = glm::vec3(0.0f, 0.0f, 0.0f);
-    torqueAccum = glm::vec3(0.0f, 0.0f, 0.0f);
-    inverseInertiaTensor = glm::mat3(1.0f);
+    orientation = Mat3(1.0f);
+    angularVelocity = Vec3(0.0f, 0.0f, 0.0f);
+    angularAcceleration = Vec3(0.0f, 0.0f, 0.0f);
+    torqueAccum = Vec3(0.0f, 0.0f, 0.0f);
+    inverseInertiaTensor = Mat3(1.0f);
     isFixed = false;
 }
 
 // Setters and Getters
-void Rigidbody::SetPosition(glm::vec3 pos) {
+void Rigidbody::SetPosition(Vec3 pos) {
     position = pos;
 }
 
-glm::vec3 Rigidbody::GetPosition() {
+Vec3 Rigidbody::GetPosition() {
     return position;
 }
 
-void Rigidbody::SetVelocity(glm::vec3 vel) {
+void Rigidbody::SetVelocity(Vec3 vel) {
     velocity = vel;
 }
 
-glm::vec3 Rigidbody::GetVelocity() {
+Vec3 Rigidbody::GetVelocity() {
     return velocity;
 }
 
-void Rigidbody::SetAcceleration(glm::vec3 acc) {
+void Rigidbody::SetAcceleration(Vec3 acc) {
     acceleration = acc;
 }
 
-glm::vec3 Rigidbody::GetAcceleration() {
+Vec3 Rigidbody::GetAcceleration() {
     return acceleration;
 }
 
-void Rigidbody::SetOrientation(glm::mat3 orient) {
+void Rigidbody::SetOrientation(Mat3 orient) {
     orientation = orient;
 }
 
-glm::mat3 Rigidbody::GetOrientation() {
+Mat3 Rigidbody::GetOrientation() {
     return orientation;
 }
 
-void Rigidbody::SetAngularVelocity(glm::vec3 angVel) {
+void Rigidbody::SetAngularVelocity(Vec3 angVel) {
     angularVelocity = angVel;
 }
 
-glm::vec3 Rigidbody::GetAngularVelocity() {
+Vec3 Rigidbody::GetAngularVelocity() {
     return angularVelocity;
 }
 
-void Rigidbody::SetAngularAcceleration(glm::vec3 angAcc) {
+void Rigidbody::SetAngularAcceleration(Vec3 angAcc) {
     angularAcceleration = angAcc;
 }
 
-glm::vec3 Rigidbody::GetAngularAcceleration() {
+Vec3 Rigidbody::GetAngularAcceleration() {
     return angularAcceleration;
 }
 
-void Rigidbody::SetInverseInertiaTensor(glm::mat3 invInertia) {
+void Rigidbody::SetInverseInertiaTensor(Mat3 invInertia) {
     inverseInertiaTensor = invInertia;
 }
 
-glm::mat3 Rigidbody::GetInverseInertiaTensor() {
+Mat3 Rigidbody::GetInverseInertiaTensor() {
     return inverseInertiaTensor;
 }
 
@@ -113,21 +113,21 @@ bool Rigidbody::GetFixed() {
 }
 
 // Add a force to the object
-void Rigidbody::AddForce(glm::vec3 force) {
+void Rigidbody::AddForce(Vec3 force) {
     forceAccum += force;
 }
 
-void Rigidbody::AddTorque(glm::vec3 torque) {
+void Rigidbody::AddTorque(Vec3 torque) {
     torqueAccum += torque;
 }
 
 // Clear the forces applied to the object
 void Rigidbody::ClearForceAccumulator() {
-    forceAccum = glm::vec3(0.0f, 0.0f, 0.0f);
+    forceAccum = Vec3(0.0f, 0.0f, 0.0f);
 }
 
 void Rigidbody::ClearTorqueAccumulator() {
-    torqueAccum = glm::vec3(0.0f, 0.0f, 0.0f);
+    torqueAccum = Vec3(0.0f, 0.0f, 0.0f);
 }
 
 // Update the object's position and velocity
@@ -151,7 +151,7 @@ void Rigidbody::Update(float deltaTime) {
 }
 
 void Rigidbody::UpdateOrientation(float deltaTime) {
-    orientation += glm::mat3(0.0f, -angularVelocity.z, angularVelocity.y,
+    orientation += Mat3(0.0f, -angularVelocity.z, angularVelocity.y,
                              angularVelocity.z, 0.0f, -angularVelocity.x,
                              -angularVelocity.y, angularVelocity.x, 0.0f) * orientation * deltaTime;
 }

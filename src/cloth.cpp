@@ -1,6 +1,6 @@
 #include "physicsObjects/cloth.h"
 
-Cloth::Cloth(int w, int h, float s, float f, float m, glm::vec3 pos) {
+Cloth::Cloth(int w, int h, float s, float f, float m, Vec3 pos) {
     width = w;
     height = h;
     spacing = s;
@@ -10,7 +10,7 @@ Cloth::Cloth(int w, int h, float s, float f, float m, glm::vec3 pos) {
 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            particles.push_back(PhysicsObject(std::make_unique<Sphere>(1.0, 3), glm::vec3(position.x + (j * spacing), position.y - (i * spacing), position.z), mass / (width * height), 0.7f));
+            particles.push_back(PhysicsObject(std::make_unique<Sphere>(1.0, 3), Vec3(position.x + (j * spacing), position.y - (i * spacing), position.z), mass / (width * height), 0.7f));
         }
     }
 

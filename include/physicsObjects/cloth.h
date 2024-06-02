@@ -6,7 +6,7 @@
 
 class Cloth {
 public:
-    glm::vec3 position;
+    Vec3 position;
 
     int width;
     int height;
@@ -18,7 +18,7 @@ public:
     std::vector<PhysicsObject> particles;
     std::vector<Spring> springs;
 
-    Cloth(int w, int h, float s, float f, float m, glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f));
+    Cloth(int w, int h, float s, float f, float m, Vec3 pos = Vec3(0.0f, 0.0f, 0.0f));
 
     void Update(float deltaTime);
 };
