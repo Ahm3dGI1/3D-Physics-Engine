@@ -20,9 +20,5 @@ void PhysicsObject::Update(float deltaTime){
 
         box->maxCorner = box->center + Vec3(1.0f);
         box->minCorner = box->center - Vec3(1.0f);
-
     }
-
-
-    
 }
